@@ -12,7 +12,6 @@ void delay(int seconds) {
 
 int prompt_password() {
 
-  int count = 0;
   char inp[30] = {}; // input stack
   char ch;
   char password[30] = "admin123";
@@ -23,21 +22,15 @@ int prompt_password() {
     system("cls");
     printf("Password: ");
 
-    if (ch == 8 && count > 0) {
-      inp[count] = '\0'; // null
-      count--;
-    } else if (ch != 8 && ch != 13 && count < 30) { // if not bspace or not enter
-                                                    // or count < 30
-      inp[count] = ch;
-      inp[count + 1] = '\0';
-      count++;
-
+    if (ch == 8 && strlen(inp) > 0) {
+      inp[strlen(inp)] = '\0'; // set last to null
+    } else if (ch != 8 && ch != 13 && strlen(inp) < 30) { // if not bspace or not enter
+      strncat(inp, &ch, 1); // append current ch to end
     }
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < strlen(inp); i++) { // print *
       printf("*");
     }
-
   }
 
   return strcmp(inp, password);
