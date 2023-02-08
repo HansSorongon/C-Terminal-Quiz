@@ -35,22 +35,47 @@ void delay(int seconds) {
     while (clock() < start_time + ms); // run a while loop for seconds seconds.
 }
 
+int display_options(char options[][20], size_t num_options) {
+
+  int select = 0;
+  int selected = 0;
+
+  // initial menu
+  /* for (int i = 0; i < num_options; i++) { */
+  /*   printf("%c - %s\n", (select == i) ? '>' : ' ', options[i]); */
+  /* } */
+
+  // clear loop
+  while (!selected) {
+
+    system("cls");
+
+    for (int i = 0; i < num_options; i++) {
+      printf("%c - %s\n", (select == i) ? '>' : ' ', options[i]);
+    }
+
+    switch(getch()) {
+      case 'j': case 'J':
+        if (select < num_options - 1) {
+          select++;
+        }
+        break;
+      case 'k': case 'K':
+        if (select > 0) {
+          select--;
+        }
+        break;
+      case 'd': case 'D':
+        selected = 1;
+        break;
+    }
+}
+
+  return select;
+}
+
 void handle_cursor(int *select, int max, int *selected) {
-  switch(getch()) {
-    case 'j': case 'J':
-      if (*select < max) {
-        *select = *select + 1;
-      }
-      break;
-    case 'k': case 'K':
-      if (*select > 1) {
-        *select = *select - 1;
-      }
-      break;
-    case 'd': case 'D':
-      *selected = 1;
-      break;
-  }
+  printf("test");
 }
 
 // returns 1 if match, 0 if not match
@@ -307,7 +332,17 @@ void display_menu() {
 
 int main(int argc, char **argv) {
 
-  display_menu(1);
+  /* display_menu(1); */
+
+  int num;
+  scanf("%d", &num);
+  char options[num][20];
+
+  for (int i = 0; i < num; i++) {
+    strcpy(options[i], "Test Arbitrary");
+  }
+
+  display_options(options, sizeof(options) / sizeof(options[0]));
 
   return 0;
 }
