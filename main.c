@@ -12,6 +12,10 @@
 //  Main Menu: x
 //  Quiz Loop:
 //
+//
+// NOTES:
+//
+// set selected = 0 if it brings you somewhere else.
 
 // main structure for questions
 typedef struct {
@@ -23,6 +27,7 @@ typedef struct {
   char choice3[30];
   char answer[30];
 } question_t;
+
 
 void delay(int seconds) {
     int ms = 1000 * seconds;
@@ -43,7 +48,7 @@ void handle_cursor(int *select, int max, int *selected) {
       }
       break;
     case 'd': case 'D':
-      *selected = *select;
+      *selected = 1;
       break;
   }
 }
@@ -54,6 +59,7 @@ int prompt_password() {
   char ch;
   char password[30] = "admin123";
 
+  system("cls");
   printf("Password: ");
   while (ch != 13) { // while not enter
     ch = getch();
@@ -61,10 +67,11 @@ int prompt_password() {
     printf("Password: ");
 
     if (ch == 8 && strlen(inp) > 0) {
-      inp[strlen(inp)] = '\0'; // set last to null
+      inp[strlen(inp) - 1] = '\0'; // set last to null
     } else if (ch != 8 && ch != 13 && strlen(inp) < 30) { // if not bspace or not enter
       strncat(inp, &ch, 1); // append current ch to end
     }
+
     for (int i = 0; i < strlen(inp); i++) { // print *
       printf("*");
     }
@@ -72,51 +79,195 @@ int prompt_password() {
   return !abs(strcmp(inp, password));
 }
 
+void import_data() {
+  char file_name[30];
+  printf("Enter the name of the file you would like to import.\n\n");
+  printf(" -");
+  scanf("%s", file_name);
+
+  // TEMPORARY RECORD STUFF HERE
+  FILE* fptr;
+  fptr = fopen(file_name, "r");
+  char str[150];
+
+  if (fptr != NULL) {
+    printf("File opened. Displaying contents...\n\n");
+
+    while (fgets(str, 150, fptr)) {
+      printf("%s", str);
+    }
+  } else {
+    printf("File not found. Terminating...\n\n");
+  }
+
+  getch();
+  fclose(fptr); // cleanup
+
+}
+
 void manage_data() {
 
-  system("cls");
+  enum {
+    ADD=1,
+    EDIT=2,
+    DELETE=3,
+    IMPORT=4,
+    EXPORT=5,
+    BACK=6
+  };
 
-  // ask for password before continuing use return value to determine if should
-  // let in
-  if (prompt_password()) {
-    printf("\n\n\t  Succesfully logged in!");
-    delay(1);
+  int logged_in = prompt_password();
+
+  if (logged_in) {
+    // run data management while loop
 
     int select = 1;
     int selected = 0;
 
+
     while (!selected) {
       system("cls");
-      printf("\n\tWelcome admin, what would you like to do?\n");
+      printf("Welcome admin.\n\n") ;
+      printf("%c - Add a record\n", (select == 1) ? '>' : ' ') ;
+      printf("%c - Edit a record\n", (select == 2) ? '>' : ' ') ;
+      printf("%c - Delete a record\n", (select == 3) ? '>' : ' ') ;
+      printf("%c - Import data\n", (select == 4) ? '>' : ' ') ;
+      printf("%c - Export data\n", (select == 5) ? '>' : ' ') ;
+      printf("%c - Back\n\n", (select == 6) ? '>' : ' ') ;
 
-      printf("\n\t%c - Add questions", (select == 1) ? '>' : ' ');
-      printf("\n\t%c - Remove questions", (select == 2) ? '>' : ' ');
-      printf("\n\t%c - Back", (select == 3) ? '>' : ' ');
 
-      handle_cursor(&select, 3, &selected);
+      handle_cursor(&select, 6, &selected);
+
       if (selected) {
-        switch(select) {
-          case 1:
-            selected = 0; // continue the loop on this page
-            printf("A");
+        switch (select) {
+          case ADD:
             break;
-          case 2:
-            selected = 0;
-            printf("B");
+          case EDIT:
             break;
-          case 3:
+          case DELETE:
+            break;
+          case IMPORT:
+            import_data();
+            break;
+          case EXPORT:
+            break;
+          case BACK:
             break;
         }
       }
     }
-
   } else {
-    printf("\n\n\t  Wrong password! Please try again.");
-    delay(1);
+
+    int select = 1; // this is in scope of while that runs within else
+    int selected = 0;
+
+    while (!selected) {
+      system("cls");
+      printf("You entered the wrong password!\n\n") ;
+      printf("%c - Try again\n", (select == 1) ? '>' : ' ') ;
+      printf("%c - Back", (select == 2) ? '>' : ' ') ;
+      handle_cursor(&select, 2, &selected);
+
+      if (selected) {
+        switch(select) {
+          case 1:
+            manage_data(); // Recursive
+            break;
+          case 2:
+            break;
+        }
+      }
+    }
   }
 }
 
+void play(char topics[][20], size_t size) {
+
+  system("cls");
+  printf("\n");
+
+  int select = 1;
+  int selected = 0;
+
+  while (!selected) {
+    system("cls");
+
+    for (int i = 0; i < size; i++) {
+      printf("\t%c%s\n", (select == i + 1) ? '>' : ' ', topics[i]);
+    }
+    handle_cursor(&select, size, &selected);
+  }
+}
+
+void play_menu() {
+
+  enum {
+    PLAY=1,
+    VIEW=2,
+    EXIT=3,
+  };
+
+  int select = 1;
+  int selected = 0;
+
+  // write to score.txt
+  FILE* fptr;
+  fptr = fopen("score.txt", "w+");
+
+  // get NUM_TOPICS from file with something like count()
+  // assign each topic to topics[]
+
+  char topics[5][20];
+
+  for (int i = 0; i < 5; i++) {
+    strcpy(topics[i], "Geology");
+  }
+
+  // READ FILE INTO TOPICS HERE!
+
+  while (!selected) {
+
+    system("cls");
+    printf("\t      Are you ready?\n\n");
+    printf("\t    %c  - Play\n", (select == 1) ? '>' : ' ');
+    printf("\t    %c  - View Scores\n", (select == 2) ? '>' : ' ');
+    printf("\t    %c  - Exit\n", (select == 3) ? '>' : ' ');
+    handle_cursor(&select, 3, &selected);
+
+    if (selected) {
+      switch (select) {
+        case PLAY:
+
+          system("cls");
+          char name[20];
+          printf("\n\tWhat is your name, challenger?\n\t\t - ");
+
+          scanf("%s", name);
+
+          printf("\n\n\tWelcome to the arena, %s.", name);
+          delay(1);
+
+          play(topics, sizeof(topics) / sizeof(topics[0]));
+
+          break;
+        case VIEW:
+          break;
+        case EXIT:
+          break;
+      }
+    }
+  }
+
+  fclose(fptr); // cleanup
+}
+
 void display_menu() {
+
+  enum {
+    PLAY=1,
+    MANAGE=2,
+    EXIT=3
+  };
 
   int select = 1;
   int selected = 0;
@@ -133,13 +284,16 @@ void display_menu() {
     handle_cursor(&select, 3, &selected);
     if (selected) {
       switch (select) {
-        case 1:
+        case PLAY:
+          selected = 0; // reset selected because we want to go back here
+                        // later.
+          play_menu();
           break;
-        case 2:
+        case MANAGE:
           selected = 0;
           manage_data();
           break;
-        case 3:
+        case EXIT:
           printf("\n\t   See you again soon!");
           delay(1); // delay clear screen
           end = 1;

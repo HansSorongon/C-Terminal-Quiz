@@ -1,0 +1,17 @@
+Geography
+1
+Which country features a shipwreck on its national flag?
+Vanuatu
+Bermuda
+Croatia
+Bermuda
+
+Technology
+1
+What is part of a database that holds only one type of information?
+Report
+File
+Field
+Field
+
+
