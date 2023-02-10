@@ -175,29 +175,51 @@ void manage_data(question_t *questions) {
         // IMPORT LOGIC
         FILE* fptr;
 
-        fptr = fopen(file_name, "r");
-        char str[150];
+        fptr = fopen("test.txt", "r");
+        char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n"; // lmfao
 
+        int i = 0; // count of questions in txt
         if (fptr != NULL) {
-          while (fgets(str, 150, fptr)) {
-            printf("%s", str);
 
-
-
-
+          // serialization
+          while (!feof(fptr)) {
+            fscanf(fptr, format,
+              questions[i].topic,
+              &questions[i].q_number,
+              questions[i].question,
+              questions[i].choice1,
+              questions[i].choice2,
+              questions[i].choice3,
+              questions[i].answer);
+            i++;
           }
+
         } else {
           printf("File not found. Terminating...\n\n");
         }
 
-        // store to struct array here!
-
         if (fptr) {
           for (int i = 0; i < 12; i++) {
             printf("#");
-            delay(0.2);
+            delay(0.1);
           }
           printf(" DONE!");
+        }
+
+        printf("\n\n Displaying file contents...\n");
+        delay(0.5);
+
+        for (int j = 0; j < i; j++) {
+
+            printf("\n-----------------------------");
+            printf("\nTOPIC: %s\n", questions[j].topic);
+            printf("NO: %d\n", questions[j].q_number);
+            printf("Q: %s\n\n", questions[j].question);
+            printf("A. %s\n", questions[j].choice1);
+            printf("B. %s\n", questions[j].choice2);
+            printf("C. %s\n\n", questions[j].choice3);
+            printf("ANS: %s\n", questions[j].answer);
+            printf("\n-----------------------------");
         }
 
         fclose(fptr);
@@ -320,7 +342,7 @@ void display_menu() {
   char menu_options[3][20] = {"Play", "Manage Data", "Exit"};
   int selected = display_options("\n\t----- QUIZ MASTER -----\n\n", menu_options, 3);
 
-  question_t questions[100] // QUESTIONS STORE HERE AFTER LOAD
+  question_t questions[100]; // QUESTIONS STORE HERE AFTER LOAD
 
   switch(selected) {
     case PLAY:
@@ -331,7 +353,6 @@ void display_menu() {
     case EXIT:
       break;
   }
-
 }
 
 int main(int argc, char **argv) {
