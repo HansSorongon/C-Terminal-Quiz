@@ -42,7 +42,6 @@ void delay(float seconds) {
 // returns selected
 int display_options(char prompt[60], char options[][20], size_t num_options) {
 
-
   int select = 0;
   int selected = 0;
 
@@ -112,30 +111,119 @@ int prompt_password() {
   return !abs(strcmp(inp, password));
 }
 
-void import_data() {
-  char file_name[30];
-  printf("Enter the name of the file you would like to import.\n\n");
-  printf(" -");
+int import_data(question_t *questions) {
+
+  system("cls");
+
+  static char file_name[30];
+  printf("\n Enter the file name: ");
   scanf("%s", file_name);
 
-  // TEMPORARY RECORD STUFF HERE
+  strcpy(file_name, file_name);
+  printf("\n Importing %s \n", file_name);
+  printf(" ");
+
+  // IMPORT LOGIC
   FILE* fptr;
+
   fptr = fopen(file_name, "r");
-  char str[150];
+  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n"; // lmfao
 
+  int i = 0; // count of questions in txt
   if (fptr != NULL) {
-    printf("File opened. Displaying contents...\n\n");
 
-    while (fgets(str, 150, fptr)) {
-      printf("%s", str);
+    // serialization
+    while (!feof(fptr)) {
+      fscanf(fptr, format,
+        questions[i].topic,
+        &questions[i].q_number,
+        questions[i].question,
+        questions[i].choice1,
+        questions[i].choice2,
+        questions[i].choice3,
+        questions[i].answer);
+      i++;
     }
+
   } else {
-    printf("File not found. Terminating...\n\n");
+    printf("File not found. Terminating...\n");
   }
 
-  getch();
-  fclose(fptr); // cleanup
+  if (fptr) {
+    for (int i = 0; i < 12; i++) {
+      printf("#");
+      delay(0.1);
+    }
+    printf(" DONE!");
 
+    printf("\n\n Displaying file contents...\n");
+    delay(0.5);
+
+    for (int j = 0; j < i; j++) {
+
+        printf("\n-----------------------------");
+        printf("\nTOPIC %d: %s\n", j, questions[j].topic);
+        printf("NO: %d\n", questions[j].q_number);
+        printf("Q: %s\n\n", questions[j].question);
+        printf("A. %s\n", questions[j].choice1);
+        printf("B. %s\n", questions[j].choice2);
+        printf("C. %s\n\n", questions[j].choice3);
+        printf("ANS: %s\n", questions[j].answer);
+        printf("\n-----------------------------");
+    }
+  }
+
+  fclose(fptr);
+  delay(0.5);
+  printf("\n\n Press any key to continue...");
+  getch();
+
+  return i; // size
+}
+
+void delete_record(question_t *questions) {
+
+  if (questions[0].topic[0]) {
+
+  } else {
+
+    char import_options[2][20] = {"Yes", "No"};
+    int select = display_options("You have not imported a file! Import one?\n\n", import_options, 2);
+
+    switch (select) {
+      case 0:
+
+        system("cls");
+        size_t size = import_data(questions);
+
+        char topics[100][20]; // 100 worst case scenario possible topics
+                              // variable sized array in switch case is
+                              // forbidden
+        int topic_count = 0;
+
+        for (int i = 0; i < size; i++) {
+          int in = 0;
+          for (int j = 0; j < i; j++) {
+            if (!strcmp(questions[i].topic, questions[j].topic)) {
+              in = 1;
+            }
+          }
+
+          if (!in) {
+            strcpy(topics[topic_count], questions[i].topic);
+            topic_count++;
+          }
+        }
+
+        system("cls");
+        display_options("  Please choose a topic.\n\n", topics, size);
+
+        break;
+      case 1:
+        display_menu(questions);
+        break;
+    }
+  }
 }
 
 void manage_data(question_t *questions) {
@@ -162,76 +250,16 @@ void manage_data(question_t *questions) {
       case EDIT:
         break;
       case DELETE:
+        delete_record(questions);
         break;
       case IMPORT:
-
-        system("cls");
-
-        string file_name;
-        strcpy(file_name, "test.txt");
-        printf("\n Importing %s \n", file_name);
-        printf(" ");
-
-        // IMPORT LOGIC
-        FILE* fptr;
-
-        fptr = fopen("test.txt", "r");
-        char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n"; // lmfao
-
-        int i = 0; // count of questions in txt
-        if (fptr != NULL) {
-
-          // serialization
-          while (!feof(fptr)) {
-            fscanf(fptr, format,
-              questions[i].topic,
-              &questions[i].q_number,
-              questions[i].question,
-              questions[i].choice1,
-              questions[i].choice2,
-              questions[i].choice3,
-              questions[i].answer);
-            i++;
-          }
-
-        } else {
-          printf("File not found. Terminating...\n\n");
-        }
-
-        if (fptr) {
-          for (int i = 0; i < 12; i++) {
-            printf("#");
-            delay(0.1);
-          }
-          printf(" DONE!");
-        }
-
-        printf("\n\n Displaying file contents...\n");
-        delay(0.5);
-
-        for (int j = 0; j < i; j++) {
-
-            printf("\n-----------------------------");
-            printf("\nTOPIC: %s\n", questions[j].topic);
-            printf("NO: %d\n", questions[j].q_number);
-            printf("Q: %s\n\n", questions[j].question);
-            printf("A. %s\n", questions[j].choice1);
-            printf("B. %s\n", questions[j].choice2);
-            printf("C. %s\n\n", questions[j].choice3);
-            printf("ANS: %s\n", questions[j].answer);
-            printf("\n-----------------------------");
-        }
-
-        fclose(fptr);
-        printf("\n\n Press any key to continue...");
-
-        getch();
-
+        import_data(questions);
+        display_menu(questions);
         break;
       case EXPORT:
         break;
       case BACK:
-        display_menu();
+        display_menu(questions);
         break;
     }
 
@@ -251,87 +279,34 @@ void manage_data(question_t *questions) {
   }
 }
 
-void play(char topics[][20], size_t size) {
-
-  system("cls");
-  printf("\n");
-
-  int select = 1;
-  int selected = 0;
-
-  while (!selected) {
-    system("cls");
-
-    for (int i = 0; i < size; i++) {
-      printf("\t%c%s\n", (select == i + 1) ? '>' : ' ', topics[i]);
-    }
-    handle_cursor(&select, size, &selected);
-  }
+void play(question_t *questions) {
+  printf("Play here");
 }
 
-void play_menu() {
+void play_menu(question_t *questions) {
 
   enum {
-    PLAY=1,
-    VIEW=2,
-    EXIT=3,
+    PLAY=0,
+    VIEW=1,
+    EXIT=2
   };
 
-  int select = 1;
-  int selected = 0;
+  char play_options[3][20] = {"I'm Ready", "View Scores", "Exit"};
+  int select = display_options("\n    Welcome challenger, are you ready?\n\n", play_options, 3);
 
-  // write to score.txt
-  FILE* fptr;
-  fptr = fopen("score.txt", "w+");
-
-  // get NUM_TOPICS from file with something like count()
-  // assign each topic to topics[]
-
-  char topics[5][20];
-
-  for (int i = 0; i < 5; i++) {
-    strcpy(topics[i], "Geology");
+  switch (select) {
+    case 0:
+      play(questions);
+      break;
+    case 1:
+      break;
+    case 2:
+      display_menu();
+      break;
   }
-
-  // READ FILE INTO TOPICS HERE!
-
-  while (!selected) {
-
-    system("cls");
-    printf("\t      Are you ready?\n\n");
-    printf("\t    %c  - Play\n", (select == 1) ? '>' : ' ');
-    printf("\t    %c  - View Scores\n", (select == 2) ? '>' : ' ');
-    printf("\t    %c  - Exit\n", (select == 3) ? '>' : ' ');
-    handle_cursor(&select, 3, &selected);
-
-    if (selected) {
-      switch (select) {
-        case PLAY:
-
-          system("cls");
-          char name[20];
-          printf("\n\tWhat is your name, challenger?\n\t\t - ");
-
-          scanf("%s", name);
-
-          printf("\n\n\tWelcome to the arena, %s.", name);
-          delay(1);
-
-          play(topics, sizeof(topics) / sizeof(topics[0]));
-
-          break;
-        case VIEW:
-          break;
-        case EXIT:
-          break;
-      }
-    }
-  }
-
-  fclose(fptr); // cleanup
 }
 
-void display_menu() {
+void display_menu(question_t *questions) {
 
   enum {
     PLAY=0,
@@ -342,10 +317,9 @@ void display_menu() {
   char menu_options[3][20] = {"Play", "Manage Data", "Exit"};
   int selected = display_options("\n\t----- QUIZ MASTER -----\n\n", menu_options, 3);
 
-  question_t questions[100]; // QUESTIONS STORE HERE AFTER LOAD
-
   switch(selected) {
     case PLAY:
+      play_menu(questions);
       break;
     case MANAGE:
       manage_data(questions);
@@ -357,7 +331,9 @@ void display_menu() {
 
 int main(int argc, char **argv) {
 
-  display_menu();
+  question_t questions[100]; // QUESTIONS ARRAY
+
+  display_menu(questions);
 
   return 0;
 }
