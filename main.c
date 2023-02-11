@@ -111,21 +111,21 @@ int prompt_password() {
   return !abs(strcmp(inp, password));
 }
 
-void print_question(const question_t *questions, int index) {
+void print_question(const question_t question) {
 
   printf("\n-----------------------------");
-  printf("\nTOPIC %d: %s\n", index, questions[index].topic);
-  printf("NO: %d\n", questions[index].q_number);
-  printf("Q: %s\n\n", questions[index].question);
-  printf("A. %s\n", questions[index].choice1);
-  printf("B. %s\n", questions[index].choice2);
-  printf("C. %s\n\n", questions[index].choice3);
-  printf("ANS: %s\n", questions[index].answer);
+  printf("\nTOPIC: %s\n", question.topic);
+  printf("NO: %d\n", question.q_number);
+  printf("Q: %s\n\n", question.question);
+  printf("A. %s\n", question.choice1);
+  printf("B. %s\n", question.choice2);
+  printf("C. %s\n\n", question.choice3);
+  printf("ANS: %s\n", question.answer);
   printf("\n-----------------------------");
 
 }
 
-int import_data(question_t *questions) {
+int import_data(const question_t *questions) {
 
   system("cls");
 
@@ -170,16 +170,13 @@ int import_data(question_t *questions) {
     }
     printf(" DONE!");
 
-    printf("\n\n Displaying file contents...\n");
-    delay(0.5);
-
     char confirm_options[2][20] = { "Yes", "No" };
-
     int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
 
     if (!confirm) {
+      printf("\n\n Displaying file contents...\n");
       for (int j = 0; j < i; j++) {
-        print_question(questions, j);
+        print_question(questions[j]);
       }
     }
 
@@ -193,7 +190,39 @@ int import_data(question_t *questions) {
   return i; // size
 }
 
-void delete_record(question_t *questions) {
+void delete_cont(const const question_t *questions, size_t size) {
+
+  char topics[100][20]; // 100 worst case scenario possible topics
+                        // variable sized array in switch case is
+                        // forbidden
+  int topic_count = 0;
+
+  for (int i = 0; i < size; i++) {
+    int in = 0;
+    for (int j = 0; j < i; j++) {
+      if (!strcmp(questions[i].topic, questions[j].topic)) {
+        in = 1;
+      }
+    }
+
+    if (!in) {
+      strcpy(topics[topic_count], questions[i].topic);
+      topic_count++;
+    }
+  }
+
+  system("cls");
+  int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
+
+  for (int i = 0; i < size; i++) {
+    if (!strcmp(topics[sel_topic], questions[i].topic)) {
+      print_question(questions[i]);
+    }
+  }
+
+}
+
+void delete_record(const question_t *questions) {
 
   if (questions[0].topic[0]) {
 
@@ -208,27 +237,7 @@ void delete_record(question_t *questions) {
         system("cls");
         size_t size = import_data(questions);
 
-        char topics[100][20]; // 100 worst case scenario possible topics
-                              // variable sized array in switch case is
-                              // forbidden
-        int topic_count = 0;
-
-        for (int i = 0; i < size; i++) {
-          int in = 0;
-          for (int j = 0; j < i; j++) {
-            if (!strcmp(questions[i].topic, questions[j].topic)) {
-              in = 1;
-            }
-          }
-
-          if (!in) {
-            strcpy(topics[topic_count], questions[i].topic);
-            topic_count++;
-          }
-        }
-
-        system("cls");
-        display_options("  Please choose a topic.\n\n", topics, size);
+        delete_cont(questions, size);
 
         break;
       case 1:
@@ -238,7 +247,7 @@ void delete_record(question_t *questions) {
   }
 }
 
-void manage_data(question_t *questions) {
+void manage_data(const question_t *questions) {
 
   enum {
     ADD=0,
@@ -291,11 +300,11 @@ void manage_data(question_t *questions) {
   }
 }
 
-void play(question_t *questions) {
+void play(const question_t *questions) {
   printf("Play here");
 }
 
-void play_menu(question_t *questions) {
+void play_menu(const question_t *questions) {
 
   enum {
     PLAY=0,
@@ -318,7 +327,7 @@ void play_menu(question_t *questions) {
   }
 }
 
-void display_menu(question_t *questions) {
+void display_menu(const question_t *questions) {
 
   enum {
     PLAY=0,
