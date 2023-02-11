@@ -164,7 +164,7 @@ int import_data(const question_t *questions) {
   }
 
   if (fptr) {
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 15; i++) {
       printf("#");
       delay(0.1);
     }
@@ -183,7 +183,6 @@ int import_data(const question_t *questions) {
   }
 
   fclose(fptr);
-  delay(0.5);
   printf("\n\n Press any key to continue...");
   getch();
 
@@ -191,6 +190,8 @@ int import_data(const question_t *questions) {
 }
 
 void delete_cont(const const question_t *questions, size_t size) {
+
+  printf("SIZE: %d", size);
 
   char topics[100][20]; // 100 worst case scenario possible topics
                         // variable sized array in switch case is
@@ -212,7 +213,7 @@ void delete_cont(const const question_t *questions, size_t size) {
   }
 
   system("cls");
-  int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
+  int sel_topic = display_options("\tPlease choose a topic.\n\n", topics, topic_count);
 
   for (int i = 0; i < size; i++) {
     if (!strcmp(topics[sel_topic], questions[i].topic)) {
@@ -222,9 +223,13 @@ void delete_cont(const const question_t *questions, size_t size) {
 
 }
 
-void delete_record(const question_t *questions) {
+void delete_record(const question_t *questions, size_t size) { // just take
+                                                               // size as
+                                                               // value
 
-  if (questions[0].topic[0]) {
+  if (size) { // if array already imported, size will be initialized.
+
+    delete_cont(questions, size);
 
   } else {
 
@@ -235,19 +240,19 @@ void delete_record(const question_t *questions) {
       case 0:
 
         system("cls");
-        size_t size = import_data(questions);
+        size_t size = import_data(questions); // import fallback
 
         delete_cont(questions, size);
 
         break;
       case 1:
-        display_menu(questions);
+        display_menu(questions, 0); // no size
         break;
     }
   }
 }
 
-void manage_data(const question_t *questions) {
+void manage_data(const question_t *questions, size_t *size) {
 
   enum {
     ADD=0,
@@ -271,16 +276,16 @@ void manage_data(const question_t *questions) {
       case EDIT:
         break;
       case DELETE:
-        delete_record(questions);
+        delete_record(questions, *size);
         break;
       case IMPORT:
-        import_data(questions);
-        display_menu(questions);
+        *size = import_data(questions); // if we import data, size gets init
+        display_menu(questions, size);
         break;
       case EXPORT:
         break;
       case BACK:
-        display_menu(questions);
+        display_menu(questions, size);
         break;
     }
 
@@ -291,7 +296,8 @@ void manage_data(const question_t *questions) {
 
     switch(select) {
       case 0:
-        manage_data(questions);
+        manage_data(questions, size); // recursive fn to try again
+
         break;
       case 1:
         display_menu();
@@ -327,7 +333,7 @@ void play_menu(const question_t *questions) {
   }
 }
 
-void display_menu(const question_t *questions) {
+void display_menu(const question_t *questions, size_t *size) {
 
   enum {
     PLAY=0,
@@ -343,7 +349,7 @@ void display_menu(const question_t *questions) {
       play_menu(questions);
       break;
     case MANAGE:
-      manage_data(questions);
+      manage_data(questions, size);
       break;
     case EXIT:
       break;
@@ -352,9 +358,12 @@ void display_menu(const question_t *questions) {
 
 int main(int argc, char **argv) {
 
+  // *questions always comes with *size
   question_t questions[100]; // QUESTIONS ARRAY
+  size_t questions_size = 0; // has to be init here because it wont get called
+                             // again.
 
-  display_menu(questions);
+  display_menu(questions, &questions_size);
 
   return 0;
 }

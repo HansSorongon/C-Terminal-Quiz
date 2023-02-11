@@ -29,3 +29,10 @@ AGP Port
 RAM Slot
 ATX Connector
 AGP Port
+
+Geography
+2
+What is the capital of Indonesia?
+Jakarta
+Jabolta
+Jabotin
