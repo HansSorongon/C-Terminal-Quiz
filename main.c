@@ -111,6 +111,20 @@ int prompt_password() {
   return !abs(strcmp(inp, password));
 }
 
+void print_question(const question_t *questions, int index) {
+
+  printf("\n-----------------------------");
+  printf("\nTOPIC %d: %s\n", index, questions[index].topic);
+  printf("NO: %d\n", questions[index].q_number);
+  printf("Q: %s\n\n", questions[index].question);
+  printf("A. %s\n", questions[index].choice1);
+  printf("B. %s\n", questions[index].choice2);
+  printf("C. %s\n\n", questions[index].choice3);
+  printf("ANS: %s\n", questions[index].answer);
+  printf("\n-----------------------------");
+
+}
+
 int import_data(question_t *questions) {
 
   system("cls");
@@ -159,18 +173,16 @@ int import_data(question_t *questions) {
     printf("\n\n Displaying file contents...\n");
     delay(0.5);
 
-    for (int j = 0; j < i; j++) {
+    char confirm_options[2][20] = { "Yes", "No" };
 
-        printf("\n-----------------------------");
-        printf("\nTOPIC %d: %s\n", j, questions[j].topic);
-        printf("NO: %d\n", questions[j].q_number);
-        printf("Q: %s\n\n", questions[j].question);
-        printf("A. %s\n", questions[j].choice1);
-        printf("B. %s\n", questions[j].choice2);
-        printf("C. %s\n\n", questions[j].choice3);
-        printf("ANS: %s\n", questions[j].answer);
-        printf("\n-----------------------------");
+    int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
+
+    if (!confirm) {
+      for (int j = 0; j < i; j++) {
+        print_question(questions, j);
+      }
     }
+
   }
 
   fclose(fptr);

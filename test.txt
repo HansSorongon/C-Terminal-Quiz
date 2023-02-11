@@ -13,3 +13,19 @@ Report
 File
 Field
 Field
+
+Technology
+2
+Which chip implements the slower capabilities of the motherboard?
+Southbridge
+Northbridge
+CMOS Battery
+Southbridge
+
+Technology
+3
+Which port is for attaching a video card to your system?
+AGP Port
+RAM Slot
+ATX Connector
+AGP Port
