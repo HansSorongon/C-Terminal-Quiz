@@ -17,6 +17,7 @@
 //
 // set selected = 0 if it brings you somewhere else.
 
+// function prot for display_menu()
 void display_menu();
 
 typedef char string[50];
@@ -111,7 +112,7 @@ int prompt_password() {
   return !abs(strcmp(inp, password));
 }
 
-void print_question(const question_t question) {
+void print_question(question_t question) {
 
   printf("\n-----------------------------");
   printf("\nTOPIC: %s\n", question.topic);
@@ -125,7 +126,7 @@ void print_question(const question_t question) {
 
 }
 
-int import_data(const question_t *questions) {
+int import_data(question_t *questions) {
 
   system("cls");
 
@@ -168,7 +169,6 @@ int import_data(const question_t *questions) {
       printf("#");
       delay(0.1);
     }
-    printf(" DONE!");
 
     char confirm_options[2][20] = { "Yes", "No" };
     int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
@@ -189,45 +189,109 @@ int import_data(const question_t *questions) {
   return i; // size
 }
 
-void delete_cont(const const question_t *questions, size_t size) {
-
-  printf("SIZE: %d", size);
+void delete_cont(question_t *questions, size_t *size) {
 
   char topics[100][20]; // 100 worst case scenario possible topics
-                        // variable sized array in switch case is
+                        // variable *sized array in switch case is
                         // forbidden
   int topic_count = 0;
 
-  for (int i = 0; i < size; i++) {
+  // generate list of unique topics.
+  for (int i = 0; i < *size; i++) {
+
     int in = 0;
     for (int j = 0; j < i; j++) {
       if (!strcmp(questions[i].topic, questions[j].topic)) {
         in = 1;
       }
     }
-
     if (!in) {
       strcpy(topics[topic_count], questions[i].topic);
       topic_count++;
     }
+
   }
 
+  // prompt to select topic
   system("cls");
-  int sel_topic = display_options("\tPlease choose a topic.\n\n", topics, topic_count);
+  int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
 
-  for (int i = 0; i < size; i++) {
+  // show all questions under that topic
+  for (int i = 0; i < *size; i++) {
     if (!strcmp(topics[sel_topic], questions[i].topic)) {
       print_question(questions[i]);
     }
   }
 
+  int q_num;
+
+  // prompt to select which question to delete
+  printf("\n\n  Enter the question number: ");
+  scanf("%d", &q_num);
+
+  // iter through all questions in struct
+  for (int i = 0; i < *size; i++) {
+
+    // if topic matches selected AND question number matches entered
+    if ((!strcmp(topics[sel_topic], questions[i].topic)) && (q_num == questions[i].q_number)) {
+      system("cls");
+      printf("You selected question %d.\n", questions[i].q_number);
+      print_question(questions[i]);
+
+      // DELETION CONFIRMATION
+      printf("\n\n Are you sure you want to delete this question? y/n");
+      int selected = 0;
+      char select = '\0';
+
+      // while not selected
+      while (!selected) {
+        select = getch();
+        if (select == 'y' || select == 'Y') {
+          selected = 1;
+
+          for (int j = i; j < *size - 1; j++) {
+            questions[j] = questions[j + 1];
+          }
+
+          (*size)--;
+
+          // decrement q_number of all questions after questions[i].
+          for (int x = 0; x < *size; x++) {
+            if (!strcmp(questions[i].topic, questions[x].topic)) { // if same
+                                                                   // topic as
+                                                                   // deleted
+              if (questions[x].q_number > i) {
+                questions[x].q_number -= 1;
+              }
+            }
+          }
+
+          // print all again
+          printf(" New list: \n\n");
+          for (int y = 0; y < *size; y++) {
+            print_question(questions[y]);
+          }
+
+
+          printf("\n\nRecord deleted.");
+
+        } else if (select == 'n' || select == 'N'){
+          selected = 1;
+          printf("\n\nTerminating...");
+        }
+      }
+    }
+  }
+
+
+
 }
 
-void delete_record(const question_t *questions, size_t size) { // just take
+void delete_record(question_t *questions, size_t *size) { // just take
                                                                // size as
                                                                // value
 
-  if (size) { // if array already imported, size will be initialized.
+  if (*size) { // if array already imported, size will be initialized.
 
     delete_cont(questions, size);
 
@@ -240,7 +304,9 @@ void delete_record(const question_t *questions, size_t size) { // just take
       case 0:
 
         system("cls");
-        size_t size = import_data(questions); // import fallback
+        size_t i_size = import_data(questions); // import fallback
+
+        *size = i_size;
 
         delete_cont(questions, size);
 
@@ -252,7 +318,7 @@ void delete_record(const question_t *questions, size_t size) { // just take
   }
 }
 
-void manage_data(const question_t *questions, size_t *size) {
+void manage_data(question_t *questions, size_t *size) {
 
   enum {
     ADD=0,
@@ -276,7 +342,7 @@ void manage_data(const question_t *questions, size_t *size) {
       case EDIT:
         break;
       case DELETE:
-        delete_record(questions, *size);
+        delete_record(questions, size);
         break;
       case IMPORT:
         *size = import_data(questions); // if we import data, size gets init
@@ -306,11 +372,11 @@ void manage_data(const question_t *questions, size_t *size) {
   }
 }
 
-void play(const question_t *questions) {
+void play(question_t *questions) {
   printf("Play here");
 }
 
-void play_menu(const question_t *questions) {
+void play_menu(question_t *questions) {
 
   enum {
     PLAY=0,
@@ -333,7 +399,7 @@ void play_menu(const question_t *questions) {
   }
 }
 
-void display_menu(const question_t *questions, size_t *size) {
+void display_menu(question_t *questions, size_t *size) {
 
   enum {
     PLAY=0,
