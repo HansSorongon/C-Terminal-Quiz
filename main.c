@@ -33,6 +33,12 @@ typedef struct {
   char answer[30];
 } question_t;
 
+typedef struct {
+  question_t questions;
+  size_t size;
+  char file_name[30];
+} file;
+
 
 void delay(float seconds) {
     float ms = 1000 * seconds;
@@ -212,7 +218,6 @@ void delete_cont(question_t *questions, size_t *size) {
 
   }
 
-  // prompt to select topic
   system("cls");
   int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
 
@@ -272,6 +277,9 @@ void delete_cont(question_t *questions, size_t *size) {
             print_question(questions[y]);
           }
 
+          FILE* fptr = fopen("new.txt", "w+"); // need file name
+
+          fclose(fptr);
 
           printf("\n\nRecord deleted.");
 
@@ -282,9 +290,6 @@ void delete_cont(question_t *questions, size_t *size) {
       }
     }
   }
-
-
-
 }
 
 void delete_record(question_t *questions, size_t *size) { // just take
@@ -318,7 +323,7 @@ void delete_record(question_t *questions, size_t *size) { // just take
   }
 }
 
-void manage_data(question_t *questions, size_t *size) {
+void manage_data(question_t *questions, size_t *size, char file_name[]) {
 
   enum {
     ADD=0,
@@ -399,7 +404,7 @@ void play_menu(question_t *questions) {
   }
 }
 
-void display_menu(question_t *questions, size_t *size) {
+void display_menu(question_t *questions, size_t *size, char file_name[]) {
 
   enum {
     PLAY=0,
@@ -415,7 +420,7 @@ void display_menu(question_t *questions, size_t *size) {
       play_menu(questions);
       break;
     case MANAGE:
-      manage_data(questions, size);
+      manage_data(questions, size, file_name);
       break;
     case EXIT:
       break;
@@ -425,11 +430,16 @@ void display_menu(question_t *questions, size_t *size) {
 int main(int argc, char **argv) {
 
   // *questions always comes with *size
+
+  file q_file = {};
+
   question_t questions[100]; // QUESTIONS ARRAY
   size_t questions_size = 0; // has to be init here because it wont get called
                              // again.
+  char file_name[30];
 
-  display_menu(questions, &questions_size);
+  display_menu(questions, &questions_size, file_name);
+
 
   return 0;
 }
