@@ -34,11 +34,10 @@ typedef struct {
 } question_t;
 
 typedef struct {
-  question_t questions;
+  question_t questions[100];
   size_t size;
   char file_name[30];
-} file;
-
+} file_t;
 
 void delay(float seconds) {
     float ms = 1000 * seconds;
@@ -132,7 +131,7 @@ void print_question(question_t question) {
 
 }
 
-int import_data(question_t *questions) {
+int import_data(file_t *file_props) {
 
   system("cls");
 
@@ -140,7 +139,8 @@ int import_data(question_t *questions) {
   printf("\n Enter the file name: ");
   scanf("%s", file_name);
 
-  strcpy(file_name, file_name);
+  strcpy(file_props->file_name, file_name); // set in file props
+
   printf("\n Importing %s \n", file_name);
   printf(" ");
 
@@ -156,13 +156,13 @@ int import_data(question_t *questions) {
     // serialization
     while (!feof(fptr)) {
       fscanf(fptr, format,
-        questions[i].topic,
-        &questions[i].q_number,
-        questions[i].question,
-        questions[i].choice1,
-        questions[i].choice2,
-        questions[i].choice3,
-        questions[i].answer);
+        file_props->questions[i].topic, // question at index i
+        &(file_props->questions[i].q_number),
+        file_props->questions[i].question,
+        file_props->questions[i].choice1,
+        file_props->questions[i].choice2,
+        file_props->questions[i].choice3,
+        file_props->questions[i].answer);
       i++;
     }
 
@@ -182,10 +182,9 @@ int import_data(question_t *questions) {
     if (!confirm) {
       printf("\n\n Displaying file contents...\n");
       for (int j = 0; j < i; j++) {
-        print_question(questions[j]);
+        print_question(file_props->questions[j]);
       }
     }
-
   }
 
   fclose(fptr);
@@ -195,7 +194,7 @@ int import_data(question_t *questions) {
   return i; // size
 }
 
-void delete_cont(question_t *questions, size_t *size) {
+void delete_cont(file_t *file_props) {
 
   char topics[100][20]; // 100 worst case scenario possible topics
                         // variable *sized array in switch case is
@@ -203,16 +202,16 @@ void delete_cont(question_t *questions, size_t *size) {
   int topic_count = 0;
 
   // generate list of unique topics.
-  for (int i = 0; i < *size; i++) {
+  for (int i = 0; i < file_props->size; i++) {
 
     int in = 0;
     for (int j = 0; j < i; j++) {
-      if (!strcmp(questions[i].topic, questions[j].topic)) {
+      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) {
         in = 1;
       }
     }
     if (!in) {
-      strcpy(topics[topic_count], questions[i].topic);
+      strcpy(topics[topic_count], file_props->questions[i].topic);
       topic_count++;
     }
 
@@ -222,9 +221,9 @@ void delete_cont(question_t *questions, size_t *size) {
   int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
 
   // show all questions under that topic
-  for (int i = 0; i < *size; i++) {
-    if (!strcmp(topics[sel_topic], questions[i].topic)) {
-      print_question(questions[i]);
+  for (int i = 0; i < file_props->size; i++) {
+    if (!strcmp(topics[sel_topic], file_props->questions[i].topic)) {
+      print_question(file_props->questions[i]);
     }
   }
 
@@ -235,13 +234,19 @@ void delete_cont(question_t *questions, size_t *size) {
   scanf("%d", &q_num);
 
   // iter through all questions in struct
-  for (int i = 0; i < *size; i++) {
+  for (int i = 0; i < file_props->size; i++) {
 
     // if topic matches selected AND question number matches entered
-    if ((!strcmp(topics[sel_topic], questions[i].topic)) && (q_num == questions[i].q_number)) {
+    if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number)) {
+
+
       system("cls");
-      printf("You selected question %d.\n", questions[i].q_number);
-      print_question(questions[i]);
+      printf("You selected question %d.\n", file_props->questions[i].q_number);
+      print_question(file_props->questions[i]);
+
+      // store selected topic in string
+      char selected_topic[30];
+      strcpy(selected_topic, file_props->questions[i].topic);
 
       // DELETION CONFIRMATION
       printf("\n\n Are you sure you want to delete this question? y/n");
@@ -254,30 +259,48 @@ void delete_cont(question_t *questions, size_t *size) {
         if (select == 'y' || select == 'Y') {
           selected = 1;
 
-          for (int j = i; j < *size - 1; j++) {
-            questions[j] = questions[j + 1];
+          for (int j = i; j < file_props->size - 1; j++) {
+            file_props->questions[j] = file_props->questions[j + 1]; // shift
+                                                                     // left
+                                                                     // from i
           }
 
-          (*size)--;
+          (file_props->size)--; // decrement size
 
           // decrement q_number of all questions after questions[i].
-          for (int x = 0; x < *size; x++) {
-            if (!strcmp(questions[i].topic, questions[x].topic)) { // if same
+          for (int j = 0; j < file_props->size; j++) {
+            if (!strcmp(selected_topic, file_props->questions[j].topic)) { // if same
                                                                    // topic as
                                                                    // deleted
-              if (questions[x].q_number > i) {
-                questions[x].q_number -= 1;
+              if (file_props->questions[j].q_number > i) { // if q_number is
+                                                           // greater than the
+                                                           // deleted it will
+                                                           // be shifted left
+                file_props->questions[j].q_number -= 1;
               }
             }
           }
 
           // print all again
           printf(" New list: \n\n");
-          for (int y = 0; y < *size; y++) {
-            print_question(questions[y]);
+          for (int y = 0; y < file_props->size; y++) {
+            print_question(file_props->questions[y]);
           }
 
-          FILE* fptr = fopen("new.txt", "w+"); // need file name
+          FILE* fptr = fopen(file_props->file_name, "w+"); // need file name
+
+          char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
+
+          for (int i = 0; i < file_props->size; i++) {
+            fprintf(fptr, format,
+              file_props->questions[i].topic, // question at index i
+              file_props->questions[i].q_number,
+              file_props->questions[i].question,
+              file_props->questions[i].choice1,
+              file_props->questions[i].choice2,
+              file_props->questions[i].choice3,
+              file_props->questions[i].answer);
+          }
 
           fclose(fptr);
 
@@ -292,13 +315,11 @@ void delete_cont(question_t *questions, size_t *size) {
   }
 }
 
-void delete_record(question_t *questions, size_t *size) { // just take
-                                                               // size as
-                                                               // value
+void delete_record(file_t *file_props) { // just take
 
-  if (*size) { // if array already imported, size will be initialized.
+  if (file_props->size) { // if array already imported, size will be initialized.
 
-    delete_cont(questions, size);
+    delete_cont(file_props);
 
   } else {
 
@@ -309,21 +330,21 @@ void delete_record(question_t *questions, size_t *size) { // just take
       case 0:
 
         system("cls");
-        size_t i_size = import_data(questions); // import fallback
+        size_t i_size = import_data(file_props); // import fallback
 
-        *size = i_size;
+        file_props->size = i_size;
 
-        delete_cont(questions, size);
+        delete_cont(file_props);
 
         break;
       case 1:
-        display_menu(questions, 0); // no size
+        display_menu(file_props); // no size
         break;
     }
   }
 }
 
-void manage_data(question_t *questions, size_t *size, char file_name[]) {
+void manage_data(file_t *file_props) {
 
   enum {
     ADD=0,
@@ -347,16 +368,16 @@ void manage_data(question_t *questions, size_t *size, char file_name[]) {
       case EDIT:
         break;
       case DELETE:
-        delete_record(questions, size);
+        delete_record(file_props);
         break;
       case IMPORT:
-        *size = import_data(questions); // if we import data, size gets init
-        display_menu(questions, size);
+        file_props->size = import_data(file_props); // if we import data, size gets init
+        display_menu(file_props);
         break;
       case EXPORT:
         break;
       case BACK:
-        display_menu(questions, size);
+        display_menu(file_props);
         break;
     }
 
@@ -367,7 +388,7 @@ void manage_data(question_t *questions, size_t *size, char file_name[]) {
 
     switch(select) {
       case 0:
-        manage_data(questions, size); // recursive fn to try again
+        manage_data(file_props); // recursive fn to try again
 
         break;
       case 1:
@@ -404,7 +425,7 @@ void play_menu(question_t *questions) {
   }
 }
 
-void display_menu(question_t *questions, size_t *size, char file_name[]) {
+void display_menu(file_t *file_props) {
 
   enum {
     PLAY=0,
@@ -417,10 +438,9 @@ void display_menu(question_t *questions, size_t *size, char file_name[]) {
 
   switch(selected) {
     case PLAY:
-      play_menu(questions);
       break;
     case MANAGE:
-      manage_data(questions, size, file_name);
+      manage_data(file_props);
       break;
     case EXIT:
       break;
@@ -431,14 +451,11 @@ int main(int argc, char **argv) {
 
   // *questions always comes with *size
 
-  file q_file = {};
+  file_t file_props; // def struct for file holding questions, size, and file
+                     // name
+  file_props.size = 0; // init size as 0
 
-  question_t questions[100]; // QUESTIONS ARRAY
-  size_t questions_size = 0; // has to be init here because it wont get called
-                             // again.
-  char file_name[30];
-
-  display_menu(questions, &questions_size, file_name);
+  display_menu(&file_props);
 
 
   return 0;
