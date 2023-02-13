@@ -289,7 +289,7 @@ void add_cont(file_t *file_props) {
 
         if (fptr != NULL)
           {
-            printf("Attempting to append record...\n");
+            printf("\n  Attempting to append record...\n");
             fprintf(fptr, format,
                 new_topic,
                 max + 1,

@@ -29,3 +29,17 @@ Southbridge
 Northbridge
 CMOS
 
+Geography
+3
+What is the capital of China?
+Beijing
+Taiwan
+Bing Chilling
+
+Geography
+3
+What is the capital of Thailand
+Bangkok
+Bangpusi
+Bangdik
+
