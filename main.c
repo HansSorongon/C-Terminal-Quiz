@@ -20,7 +20,6 @@
 // function prot for display_menu()
 void display_menu();
 
-typedef char string[50];
 
 // main structure for questions
 typedef struct
@@ -159,26 +158,30 @@ void print_question(question_t question)
 
 }
 
+
+
 int import_data(file_t *file_props)
 {
+
+  char file_name[30];
+  FILE * fptr;
+  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";	// lmfao
+  int i = 0;	// count of questions in txt
+  char confirm_options[2][20] = { "Yes", "No" };
+  int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
+
+
   system("cls");
 
-  static char file_name[30];
   printf("\n Enter the file name: ");
   scanf("%s", file_name);
 
   strcpy(file_props->file_name, file_name);	// set in file props
 
-  printf("\n Importing %s \n", file_name);
-  printf(" ");
-
- 	// IMPORT LOGIC
-  FILE * fptr;
+  printf("\n Importing %s \n ", file_name);
 
   fptr = fopen(file_name, "r");
-  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";	// lmfao
 
-  int i = 0;	// count of questions in txt
   if (fptr != NULL)
   {
    	// serialization
@@ -207,10 +210,6 @@ int import_data(file_t *file_props)
       printf("#");
       delay(0.1);
     }
-
-    char confirm_options[2][20] = { "Yes", "No" };
-
-    int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
 
     if (!confirm)
     {

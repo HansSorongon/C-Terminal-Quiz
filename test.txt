@@ -1,0 +1,24 @@
+Geography
+1
+What is the capital of Indonesia?
+Jakarta
+Jabolta
+Jabotin
+Jakarta
+
+Geography
+2
+In which continent is Japan located?
+Asia
+North America
+Europe
+Asia
+
+Technology
+1
+Which among these programming languages is statically typed?
+C
+Python
+Javascript
+C
+
