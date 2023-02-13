@@ -218,6 +218,7 @@ void delete_cont(file_t *file_props) {
   }
 
   system("cls");
+  // remember this is an int
   int sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
 
   // show all questions under that topic
@@ -236,6 +237,8 @@ void delete_cont(file_t *file_props) {
   // iter through all questions in struct
   for (int i = 0; i < file_props->size; i++) {
 
+    // NOTE: i here will be the index of the selected question
+
     // if topic matches selected AND question number matches entered
     if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number)) {
 
@@ -243,10 +246,6 @@ void delete_cont(file_t *file_props) {
       system("cls");
       printf("You selected question %d.\n", file_props->questions[i].q_number);
       print_question(file_props->questions[i]);
-
-      // store selected topic in string
-      char selected_topic[30];
-      strcpy(selected_topic, file_props->questions[i].topic);
 
       // DELETION CONFIRMATION
       printf("\n\n Are you sure you want to delete this question? y/n");
@@ -267,43 +266,7 @@ void delete_cont(file_t *file_props) {
 
           (file_props->size)--; // decrement size
 
-          // decrement q_number of all questions after questions[i].
-          for (int j = 0; j < file_props->size; j++) {
-            if (!strcmp(selected_topic, file_props->questions[j].topic)) { // if same
-                                                                   // topic as
-                                                                   // deleted
-              if (file_props->questions[j].q_number > i) { // if q_number is
-                                                           // greater than the
-                                                           // deleted it will
-                                                           // be shifted left
-                file_props->questions[j].q_number -= 1;
-              }
-            }
-          }
-
-          // print all again
-          printf(" New list: \n\n");
-          for (int y = 0; y < file_props->size; y++) {
-            print_question(file_props->questions[y]);
-          }
-
-          FILE* fptr = fopen(file_props->file_name, "w+"); // need file name
-
-          char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
-
-          for (int i = 0; i < file_props->size; i++) {
-            fprintf(fptr, format,
-              file_props->questions[i].topic, // question at index i
-              file_props->questions[i].q_number,
-              file_props->questions[i].question,
-              file_props->questions[i].choice1,
-              file_props->questions[i].choice2,
-              file_props->questions[i].choice3,
-              file_props->questions[i].answer);
-          }
-
-          fclose(fptr);
-
+          system("cls");
           printf("\n\nRecord deleted.");
 
         } else if (select == 'n' || select == 'N'){
@@ -313,6 +276,49 @@ void delete_cont(file_t *file_props) {
       }
     }
   }
+
+  // decrement all here
+  for (int j = 0; j < file_props->size; j++) {
+    if (!strcmp(topics[sel_topic], file_props->questions[j].topic)) { // if same
+                                                           // topic as
+                                                           // deleted
+      if (file_props->questions[j].q_number > q_num) { // if q_number is
+                                                   // greater than the
+                                                   // deleted it will
+                                                   // be shifted left
+        file_props->questions[j].q_number -= 1;
+      }
+    }
+  }
+
+  // REWRITE TO FILE
+  FILE* fptr = fopen(file_props->file_name, "w+"); // need file name
+
+  char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
+
+  for (int i = 0; i < file_props->size; i++) {
+    fprintf(fptr, format,
+      file_props->questions[i].topic, // question at index i
+      file_props->questions[i].q_number,
+      file_props->questions[i].question,
+      file_props->questions[i].choice1,
+      file_props->questions[i].choice2,
+      file_props->questions[i].choice3,
+      file_props->questions[i].answer);
+  }
+
+  fclose(fptr);
+
+  // print new list
+  if (file_props->size < 7) { // dont print if too big
+    printf("\n\nNew List: \n\n");
+    for (int i = 0; i < file_props->size; i++) {
+      print_question(file_props->questions[i]);
+    }
+  }
+
+  printf("\n\nFinished rewriting.");
+
 }
 
 void delete_record(file_t *file_props) { // just take

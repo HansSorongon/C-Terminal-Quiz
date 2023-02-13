@@ -6,34 +6,3 @@ Jabolta
 Jabotin
 Jakarta
 
-Technology
-1
-What do you call the chip responsible for the slower processes of the motherboard?
-Southbridge
-Northbridge
-CMOS
-Southbridge
-
-Technology
-2
-What do you call the brain of the motherboard?
-CPU
-GPU
-Power Supply
-CPU
-
-Geography
-2
-In which continent is Japan located?
-Asia
-North America
-Europe
-Asia
-
-Technology
-3
-Which among these programming languages is statically typed?
-C
-Python
-Javascript
-C
