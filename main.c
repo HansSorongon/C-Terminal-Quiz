@@ -4,21 +4,14 @@
 #include <string.h>
 #include <time.h>
 
-//
-// Essential
-//  Question File Handler:
-//  Admin Login: x
-//  Exit: x
-//  Main Menu: x
-//  Quiz Loop:
-//
-//
 // NOTES:
 //
-// set selected = 0 if it brings you somewhere else.
+// Functions done editing:
+// import_data()
 
 // function prot for display_menu()
 void display_menu();
+void manage_data();
 
 
 // main structure for questions
@@ -158,30 +151,26 @@ void print_question(question_t question)
 
 }
 
-
-
 int import_data(file_t *file_props)
 {
-
-  char file_name[30];
-  FILE * fptr;
-  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";	// lmfao
-  int i = 0;	// count of questions in txt
-  char confirm_options[2][20] = { "Yes", "No" };
-  int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
-
-
   system("cls");
 
+  static char file_name[30];
   printf("\n Enter the file name: ");
   scanf("%s", file_name);
 
   strcpy(file_props->file_name, file_name);	// set in file props
 
-  printf("\n Importing %s \n ", file_name);
+  printf("\n Importing %s \n", file_name);
+  printf(" ");
+
+  // IMPORT LOGIC
+  FILE * fptr;
 
   fptr = fopen(file_name, "r");
+  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";	// lmfao
 
+  int i = 0;	// count of questions in txt
   if (fptr != NULL)
   {
    	// serialization
@@ -211,6 +200,10 @@ int import_data(file_t *file_props)
       delay(0.1);
     }
 
+    char confirm_options[2][20] = { "Yes", "No" };
+
+    int confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
+
     if (!confirm)
     {
       printf("\n\n Displaying file contents...\n");
@@ -227,6 +220,127 @@ int import_data(file_t *file_props)
 
   return i;	// size
 }
+
+void add_cont(file_t *file_props) {
+
+  char new_question[150];
+  char new_answer[30];
+
+  char new_topic[30];
+  char new_choice1[30];
+  char new_choice2[30];
+  char new_choice3[30];
+
+  char format[30] = "%s\n%d\n%s\n%s\n%s\n%s\n\n";
+
+  int max = 0;
+  int listed = 0;
+
+  printf("\n\n  Please type in the question to add: \n\n  - ");
+  scanf(" %[^\n]", new_question);
+
+  printf("\n\n  Please type in the answer to add: \n\n  - ");
+  scanf(" %[^\n]", new_answer);
+
+  for (int i = 0; i < file_props->size; i++)
+    {
+
+    // if same question and same answer as something
+    if (!strcmp(new_question, file_props->questions[i].question) &&
+        !strcmp(new_answer, file_props->questions[i].answer))
+      {
+        printf("  The record is already listed.\n");
+        listed = 1;
+        print_question(file_props->questions[i]);
+        printf("\n\n  Press any key to continue...\n");
+        getch();
+      }
+    }
+
+    if (!listed)
+      {
+        system("cls");
+
+        printf("Please enter the following:");
+
+        printf("\n\n Topic: ");
+        scanf(" %[^\n]", new_topic);
+        printf("\n\n Choice 1: ");
+        scanf(" %[^\n]", new_choice1);
+        printf("\n\n Choice 2: ");
+        scanf(" %[^\n]", new_choice2);
+        printf("\n\n Choice 3: ");
+        scanf(" %[^\n]", new_choice3);
+
+        FILE * fptr;
+        fptr = fopen(file_props->file_name, "a+");
+
+        // find max q_number
+        for (int i = 0; i < file_props->size; i++)
+          {
+            if (!strcmp(file_props->questions[i].topic, new_topic))
+              {
+                if (file_props->questions[i].q_number > max)
+                  {
+                    max = file_props->questions[i].q_number;
+                  }
+              }
+          }
+
+        if (fptr != NULL)
+          {
+            printf("Attempting to append record...\n");
+            fprintf(fptr, format,
+                new_topic,
+                max + 1,
+                new_question,
+                new_choice1,
+                new_choice2,
+                new_choice3
+            );
+          }
+
+
+        printf("  Successfully added record.");
+        printf("\n\n  Press any key to continue...\n");
+        getch();
+        manage_data(file_props);
+
+        fclose(fptr);
+      }
+
+    system("cls");
+}
+
+void add_record(file_t *file_props) {
+
+  if (file_props->size)
+    {
+      add_cont(file_props);
+    }
+    else
+    {
+      char import_options[2][20] = { "Yes", "No" };
+
+      int select = display_options("You have not imported a file! Import one?\n\n", import_options, 2);
+
+      switch (select)
+      {
+        case 0:
+
+          system("cls");
+          file_props->size = import_data(file_props);	// import fallback
+
+          add_cont(file_props);
+
+          break;
+        case 1:
+          display_menu(file_props);	// no size
+          break;
+      }
+    }
+}
+
 
 void delete_cont(file_t *file_props)
 {
@@ -308,12 +422,15 @@ void delete_cont(file_t *file_props)
           (file_props->size) --;	// decrement size
 
           system("cls");
-          printf("\n\nRecord deleted.");
+          printf("\n\n  Record deleted.");
+          printf("\n\n  Press any key to continue...");
+          manage_data(file_props);
         }
         else if (select == 'n' || select == 'N')
         {
           selected = 1;
-          printf("\n\nTerminating...");
+          printf("\n\n  Terminating...");
+          manage_data(file_props);
         }
       }
     }
@@ -374,7 +491,8 @@ void delete_cont(file_t *file_props)
 
 void delete_record(file_t *file_props)
 {
-	// just take
+
+  int init_size = 0;
 
   if (file_props->size)
   {
@@ -393,9 +511,8 @@ void delete_record(file_t *file_props)
       case 0:
 
         system("cls");
-        size_t i_size = import_data(file_props);	// import fallback
-
-        file_props->size = i_size;
+        init_size = import_data(file_props);	// import fallback
+        file_props->size = init_size;
 
         delete_cont(file_props);
 
@@ -409,6 +526,9 @@ void delete_record(file_t *file_props)
 
 void manage_data(file_t *file_props)
 {
+
+  static int logged_in = 0;
+
   enum
   {
     ADD = 0,
@@ -419,7 +539,7 @@ void manage_data(file_t *file_props)
       BACK = 5
   };
 
-  int logged_in = prompt_password();
+  if (!logged_in) logged_in = prompt_password();
 
   if (logged_in)
   {
@@ -430,6 +550,7 @@ void manage_data(file_t *file_props)
     switch (select)
     {
       case ADD:
+        add_record(file_props);
         break;
       case EDIT:
         break;
@@ -438,12 +559,14 @@ void manage_data(file_t *file_props)
         break;
       case IMPORT:
         file_props->size = import_data(file_props);	// if we import data, size gets init
-        display_menu(file_props);
+        manage_data(file_props); // have to call again here because import
+                                 // returns something
         break;
       case EXPORT:
         break;
       case BACK:
         display_menu(file_props);
+        logged_in = 0; // log out
         break;
     }
   }
