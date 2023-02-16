@@ -22,14 +22,6 @@ Southbridge
 CPU Socket
 CMOS Battery
 
-Technology
-2
-Which part of the motherboard holds the brain of the computer?
-CMOS Battery
-Southbridge
-CPU Socket
-CPU Socket
-
 CCICOMP
 1
 Which part of the motherboard is responsible for the slower processes?
