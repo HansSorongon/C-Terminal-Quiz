@@ -22,6 +22,11 @@ typedef struct
   char answer[30];
 } question_t;
 
+typedef struct {
+  char topics[100][20];
+  size_t size;
+} topics_t;
+
 // struct for file properties, list of questions, size, and file name.
 typedef struct
 {
@@ -144,11 +149,69 @@ void print_question(question_t question)
 
 }
 
+/* char * gen_unique_topics(file_t file_props) { */
+
+/*   topics_t unique_topics[]; */
+
+/*   static char topics[100][20];	// 100 worst case scenario possible topics */
+/*  	// variable *sized array in switch case is */
+/*  	// forbidden */
+/*   int topic_count = 0; */
+
+/*  	// generate list of unique topics. */
+/*   for (int i = 0; i < file_props->size; i++) */
+/*   { */
+/*     int in = 0; */
+/*     for (int j = 0; j < i; j++) */
+/*     { */
+/*       if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) */
+/*       { */
+/*       	in = 1; */
+/*       } */
+/*     } */
+
+/*     if (! in) */
+/*     { */
+/*       strcpy(topics[topic_count], file_props->questions[i].topic); */
+/*       topic_count++; */
+/*     } */
+/*   } */
+
+  return unique_topics;
+}
+
+void edit_record(file_t *file_props) {
+
+  char topics[100][20];	// 100 worst case scenario possible topics
+ 	// variable *sized array in switch case is
+ 	// forbidden
+  int topic_count = 0;
+
+ 	// generate list of unique topics.
+  for (int i = 0; i < file_props->size; i++)
+  {
+    int in = 0;
+    for (int j = 0; j < i; j++)
+    {
+      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
+      {
+      	in = 1;
+      }
+    }
+
+    if (! in)
+    {
+      strcpy(topics[topic_count], file_props->questions[i].topic);
+      topic_count++;
+    }
+  }
+}
+
 int import_data(file_t *file_props)
 {
   system("cls");
 
-  static char file_name[30];
+  char file_name[30];
   printf("\n Enter the file name: ");
   scanf("%s", file_name);
 
@@ -216,7 +279,11 @@ int import_data(file_t *file_props)
 
 void export(file_t *file_props) {
 
-  FILE *fptr = fopen(file_props->file_name, "w+");	// need file name
+  char file_name[30];
+  printf("Please enter the file name: ");
+  scanf("%s", file_name);
+
+  FILE *fptr = fopen(file_name, "w+");	// need file name
   char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
 
   // export
@@ -234,7 +301,10 @@ void export(file_t *file_props) {
 
   fclose(fptr);
 
-  printf("\n\n  Successfully exported file.");
+  printf("\n\n  Successfully exported file %s", file_name);
+  printf("\n  Press any key to continue...");
+  getch();
+
 
 }
 
@@ -540,6 +610,7 @@ void manage_data(file_t *file_props)
         add_record(file_props);
         break;
       case EDIT:
+        edit_record(file_props);
         break;
       case DELETE:
         delete_record(file_props);

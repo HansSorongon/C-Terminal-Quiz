@@ -30,11 +30,3 @@ Northbridge
 CPU Socket
 CMOS Battery
 
-Test Topic
-1
-Test Question Add
-Test Choice1
-Test2
-Test Answer
-Test Answer
-
