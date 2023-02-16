@@ -1,10 +1,10 @@
 Geography
 1
-What is the capital of Indonesia?
-Jakarta
-Jabolta
-Jabotin
-Jakarta
+In which continent is Japan located?
+Asia
+North America
+Europe
+Asia
 
 Geography
 2
@@ -16,17 +16,25 @@ Asia
 
 Technology
 1
-Which among these programming languages is statically typed?
-C
-Python
-Javascript
-C
+Which part of the motherboard is responsible for keeping track of the time?
+CMOS Battery
+Southbridge
+CPU Socket
+CMOS Battery
 
 Technology
 2
-Which part of the motherboard is responsible for keeping track of the time?
+Which part of the motherboard holds the brain of the computer?
 CMOS Battery
-Northbridge
+Southbridge
 CPU Socket
+CPU Socket
+
+CCICOMP
+1
+Which part of the motherboard is responsible for the slower processes?
 CMOS Battery
+Southbridge
+CPU Socket
+Southbridge
 
