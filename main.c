@@ -4,15 +4,11 @@
 #include <string.h>
 #include <time.h>
 
-// NOTES:
-//
-// Functions done editing:
-// import_data()
+// try adding typedefs for each string
 
 // function prot for display_menu()
 void display_menu();
 void manage_data();
-
 
 // main structure for questions
 typedef struct
@@ -24,18 +20,15 @@ typedef struct
   char choice2[30];
   char choice3[30];
   char answer[30];
-}
+} question_t;
 
-question_t;
-
+// struct for file properties, list of questions, size, and file name.
 typedef struct
 {
   question_t questions[100];
   size_t size;
   char file_name[30];
-}
-
-file_t;
+} file_t;
 
 void delay(float seconds)
 {
@@ -221,6 +214,30 @@ int import_data(file_t *file_props)
   return i;	// size
 }
 
+void export(file_t *file_props) {
+
+  FILE *fptr = fopen(file_props->file_name, "w+");	// need file name
+  char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
+
+  // export
+  for (int i = 0; i < file_props->size; i++)
+  {
+    fprintf(fptr, format,
+      file_props->questions[i].topic,	// question at index i
+      file_props->questions[i].q_number,
+      file_props->questions[i].question,
+      file_props->questions[i].choice1,
+      file_props->questions[i].choice2,
+      file_props->questions[i].choice3,
+      file_props->questions[i].answer);
+  }
+
+  fclose(fptr);
+
+  printf("\n\n  Successfully exported file.");
+
+}
+
 void add_cont(file_t *file_props) {
 
   char new_question[150];
@@ -230,8 +247,6 @@ void add_cont(file_t *file_props) {
   char new_choice1[30];
   char new_choice2[30];
   char new_choice3[30];
-
-  char format[30] = "%s\n%d\n%s\n%s\n%s\n%s\n\n";
 
   int max = 0;
   int listed = 0;
@@ -272,9 +287,6 @@ void add_cont(file_t *file_props) {
         printf("\n\n Choice 3: ");
         scanf(" %[^\n]", new_choice3);
 
-        FILE * fptr;
-        fptr = fopen(file_props->file_name, "a+");
-
         // find max q_number
         for (int i = 0; i < file_props->size; i++)
           {
@@ -287,26 +299,21 @@ void add_cont(file_t *file_props) {
               }
           }
 
-        if (fptr != NULL)
-          {
-            printf("\n  Attempting to append record...\n");
-            fprintf(fptr, format,
-                new_topic,
-                max + 1,
-                new_question,
-                new_choice1,
-                new_choice2,
-                new_choice3
-            );
-          }
+        printf("\n Attempting to append record...\n");
+        strcpy(file_props->questions[file_props->size].topic, new_topic);
+        file_props->questions[file_props->size].q_number = max + 1;
+        strcpy(file_props->questions[file_props->size].question, new_question);
+        strcpy(file_props->questions[file_props->size].choice1, new_choice1);
+        strcpy(file_props->questions[file_props->size].choice2, new_choice2);
+        strcpy(file_props->questions[file_props->size].choice3, new_choice3);
+        strcpy(file_props->questions[file_props->size].answer, new_answer);
 
+        file_props->size++;
 
-        printf("  Successfully added record.");
+        printf("\n  Successfully added record.");
         printf("\n\n  Press any key to continue...\n");
         getch();
         manage_data(file_props);
-
-        fclose(fptr);
       }
 
     system("cls");
@@ -327,15 +334,14 @@ void add_record(file_t *file_props) {
       switch (select)
       {
         case 0:
-
           system("cls");
           file_props->size = import_data(file_props);	// import fallback
-
           add_cont(file_props);
 
           break;
         case 1:
           display_menu(file_props);	// no size
+
           break;
       }
     }
@@ -455,25 +461,6 @@ void delete_cont(file_t *file_props)
     }
   }
 
- 	// REWRITE TO FILE
-  FILE *fptr = fopen(file_props->file_name, "w+");	// need file name
-
-  char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
-
-  for (int i = 0; i < file_props->size; i++)
-  {
-    fprintf(fptr, format,
-      file_props->questions[i].topic,	// question at index i
-      file_props->questions[i].q_number,
-      file_props->questions[i].question,
-      file_props->questions[i].choice1,
-      file_props->questions[i].choice2,
-      file_props->questions[i].choice3,
-      file_props->questions[i].answer);
-  }
-
-  fclose(fptr);
-
  	// print new list
   if (file_props->size < 7)
   {
@@ -563,6 +550,7 @@ void manage_data(file_t *file_props)
                                  // returns something
         break;
       case EXPORT:
+        export(file_props);
         break;
       case BACK:
         display_menu(file_props);
