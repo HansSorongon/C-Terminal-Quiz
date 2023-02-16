@@ -16,17 +16,17 @@ Asia
 
 Technology
 1
-Which part of the motherboard is responsible for keeping track of the time?
-CMOS Battery
+What do you call the brain of the computer?
+CPU
+Graphics Card
 Southbridge
-CPU Socket
-CMOS Battery
+CPU
 
-CCICOMP
-1
-Which part of the motherboard is responsible for the slower processes?
-CMOS Battery
+Technology
+2
+What do you call the part of the motherboard responsible for the slower processes?
+CPU
+Graphics Card
 Southbridge
-CPU Socket
 Southbridge
 
