@@ -165,7 +165,7 @@ void edit_record(file_t *file_props)
   int sel_topic;
   int select;
 
- 	// generate list of unique topics.
+  // generate list of unique topics.
   for (i = 0; i < file_props->size; i++)
   {
   	in = 0;
@@ -713,12 +713,34 @@ void manage_data(file_t *file_props)
 
 // ================================= PLAY LOGIC ========================
 
-void play(question_t *questions)
+void play(file_t * file_props)
 {
-  printf("Play here");
+
+  int score = 0;
+  string30_t player_name;
+
+  system("cls");
+  printf("\n  What is your name?");
+  printf("\n   - ");
+
+  scanf(" %[^\n]", player_name);
+
+
+
+  while (!game_over) {
+
+    display_options("Please select a topic.\n\n", curr_topics,);
+
+
+
+
+  }
+
+
 }
 
-void play_menu(question_t *questions)
+
+void play_menu(file_t * file_props)
 {
   enum
   {
@@ -734,7 +756,7 @@ void play_menu(question_t *questions)
   switch (select)
   {
     case 0:
-      play(questions);
+      play(file_props);
       break;
     case 1:
       break;
@@ -743,6 +765,8 @@ void play_menu(question_t *questions)
       break;
   }
 }
+
+// ====================================== END OF PLAY LOGIC =====
 
 void display_menu(file_t *file_props)
 {
@@ -760,6 +784,7 @@ void display_menu(file_t *file_props)
   switch (selected)
   {
     case PLAY:
+      play_menu(file_props);
       break;
     case MANAGE:
       manage_data(file_props);
