@@ -6,9 +6,11 @@
 
 // try adding typedefs for each string
 
-// function prot for display_menu()
+// function prot for
 void display_menu();
 void manage_data();
+int import_data();
+void delete_cont();
 
 typedef char string20_t[20];
 typedef char string30_t[30];
@@ -24,13 +26,17 @@ typedef struct
   string30_t choice2;
   string30_t choice3;
   string30_t answer;
-} question_t;
+}
+
+question_t;
 
 typedef struct
 {
   string20_t topics[100];
   size_t size;
-} topics_t;
+}
+
+topics_t;
 
 // struct for file properties, list of questions, size, and file name.
 typedef struct
@@ -38,7 +44,9 @@ typedef struct
   question_t questions[100];
   size_t size;
   string30_t file_name;
-} file_t;
+}
+
+file_t;
 
 void delay(float seconds)
 {
@@ -99,6 +107,8 @@ int display_options(string150_t prompt, string20_t options[], size_t num_options
   return select;
 }
 
+// --------------------------------------- MANAGE DATA FNS ------------------------
+
 // returns 1 if match, 0 if not match
 int prompt_password()
 {
@@ -151,118 +161,156 @@ void print_question(question_t question)
 
 }
 
+// prompt if not yet imported
+void prompt_import(file_t *file_props) {
+
+  string20_t import_options[2] = { "Yes", "No" };
+  int select = display_options("  You have not imported a file! Import one?\n\n", import_options, 2);
+  int init_size = 0;
+
+  switch (select)
+  {
+    case 0:
+
+      system("cls");
+      init_size = import_data(file_props);	// import fallback
+      file_props->size = init_size;
+
+      break;
+    case 1:
+      display_menu(file_props);	// no size
+      break;
+  }
+}
+
+void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topic_count) {
+  int i, j;
+  int in = 0;
+  int count = 0;
+
+  for (i = 0; i < file_props->size; i++) {
+    in = 0;
+    for (j = 0; j < i; j++) {
+
+      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) { // if dupe
+        in = 1;
+      }
+
+    }
+
+    if (!in) {
+      strcpy(topics[count], file_props->questions[i].topic);
+      count++;
+    }
+
+  }
+
+  *topic_count = count;
+
+}
+
 void edit_record(file_t *file_props)
 {
-  string20_t topics[100];	// 100 worst case scenario possible topics
- 	// variable *sized array in switch case is
- 	// forbidden
-  int topic_count = 0;
-  int in = 0;
-  int i;
-  int j;
 
-  int q_num;
-  int sel_topic;
-  int select;
+  if (file_props->size) {
 
-  // generate list of unique topics.
-  for (i = 0; i < file_props->size; i++)
-  {
-  	in = 0;
-    for (j = 0; j < i; j++)
+    string20_t topics[100];	// 100 worst case scenario possible topics
+          // variable *sized array in switch case is
+          // forbidden
+    size_t topic_count = 0;
+    int i;
+
+    int q_num;
+    int sel_topic;
+    int select;
+
+    find_unique_topics(file_props, topics, &topic_count); // create list of
+                                                          // unique topics
+
+    strcpy(topics[topic_count], "Back");	// append Back to topics array
+
+    printf("\n");
+    sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count );
+
+          // BACK
+    if (sel_topic == topic_count)
     {
-      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
-      {
-      	in = 1;
-      }
+      manage_data(file_props);
     }
-
-    if (! in)
+    else
     {
-      strcpy(topics[topic_count], file_props->questions[i].topic);
-      topic_count++;
-    }
-  }
-
-  strcpy(topics[topic_count], "Back");	// append Back to topics array
-
-  printf("\n");
-  sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count + 1);
-
- 	// BACK
-  if (sel_topic == topic_count)
-  {
-    manage_data(file_props);
-  }
-  else
-  {
-   	// display all under that topic
-    system("cls");
-    for (i = 0; i < file_props->size; i++)
-    {
-      if (!strcmp(topics[sel_topic], file_props->questions[i].topic))
+          // display all under that topic
+      system("cls");
+      for (i = 0; i < file_props->size; i++)
       {
-        print_question(file_props->questions[i]);
-      }
-    }
-
-    printf("\n\n Please enter the question number: ");
-    scanf("%d", &q_num);
-
-    for (i = 0; i < file_props->size; i++)
-    {
-     	// NOTE: i here will be the index of the selected question
-     	// if topic matches selected AND question number matches entered
-      if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number))
-      {
-       	// file_props->questions[i] is the question
-
-        system("cls");
-        print_question(file_props->questions[i]);
-        printf("\n\n  Which field would you like to edit?\n\n");
-
-        printf("  [1] Topic\n");
-        printf("  [2] Question\n");
-        printf("  [3] Choice A\n");
-        printf("  [4] Choice B\n");
-        printf("  [5] Choice C\n");
-        printf("  [6] Answer\n\n");
-
-        select = getch();
-        printf("You selected: %d", select - 48);
-
-        switch (select - 48)
+        if (!strcmp(topics[sel_topic], file_props->questions[i].topic))
         {
-          case 1:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].topic);
-            break;
-          case 2:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].question);
-            break;
-          case 3:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].choice1);
-            break;
-          case 4:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].choice2);
-            break;
-          case 5:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].choice3);
-            break;
-          case 6:
-            printf("\nPlease enter the new entry: ");
-            scanf(" %[^\n]", file_props->questions[i].answer);
-            break;
+          print_question(file_props->questions[i]);
         }
+      }
 
-        edit_record(file_props);	// recursive
+      printf("\n\n Please enter the question number: ");
+      scanf("%d", &q_num);
+
+      for (i = 0; i < file_props->size; i++)
+      {
+          // NOTE: i here will be the index of the selected question
+          // if topic matches selected AND question number matches entered
+        if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number))
+        {
+          // file_props->questions[i] is the question
+
+          system("cls");
+          print_question(file_props->questions[i]);
+          printf("\n\n  Which field would you like to edit?\n\n");
+
+          printf("  [1] Topic\n");
+          printf("  [2] Question\n");
+          printf("  [3] Choice A\n");
+          printf("  [4] Choice B\n");
+          printf("  [5] Choice C\n");
+          printf("  [6] Answer\n\n");
+
+          select = getch();
+          printf("You selected: %d", select - 48);
+
+          switch (select - 48)
+          {
+            case 1:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].topic);
+              break;
+            case 2:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].question);
+              break;
+            case 3:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].choice1);
+              break;
+            case 4:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].choice2);
+              break;
+            case 5:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].choice3);
+              break;
+            case 6:
+              printf("\nPlease enter the new entry: ");
+              scanf(" %[^\n]", file_props->questions[i].answer);
+              break;
+          }
+
+          edit_record(file_props);	// recursive
+        }
       }
     }
-  }
+  } else
+    {
+      prompt_import(file_props);
+      edit_record(file_props);
+    }
 }
 
 int import_data(file_t *file_props)
@@ -334,33 +382,40 @@ int import_data(file_t *file_props)
 void
 export (file_t *file_props)
 {
-  string30_t file_name;
-  int i;
 
-  printf("Please enter the file name: ");
-  scanf("%s", file_name);
+  if (file_props->size) {
+    string30_t file_name;
+    int i;
 
-  FILE *fptr = fopen(file_name, "w+");	// need file name
-  char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
+    printf("Please enter the file name: ");
+    scanf("%s", file_name);
 
- 	// export
-  for (i = 0; i < file_props->size; i++)
-  {
-    fprintf(fptr, format,
-      file_props->questions[i].topic,	// question at index i
-      file_props->questions[i].q_number,
-      file_props->questions[i].question,
-      file_props->questions[i].choice1,
-      file_props->questions[i].choice2,
-      file_props->questions[i].choice3,
-      file_props->questions[i].answer);
+    FILE *fptr = fopen(file_name, "w+");	// need file name
+    char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
+
+          // export
+    for (i = 0; i < file_props->size; i++)
+    {
+      fprintf(fptr, format,
+        file_props->questions[i].topic,	// question at index i
+        file_props->questions[i].q_number,
+        file_props->questions[i].question,
+        file_props->questions[i].choice1,
+        file_props->questions[i].choice2,
+        file_props->questions[i].choice3,
+        file_props->questions[i].answer);
+    }
+
+    fclose(fptr);
+
+    printf("\n\n  Successfully exported file %s", file_name);
+    printf("\n  Press any key to continue...");
+    getch();
+  } else {
+    printf("\n\n  You have not imported a file yet!\n");
+    printf("\n  Press any key to continue...\n");
+    getch();
   }
-
-  fclose(fptr);
-
-  printf("\n\n  Successfully exported file %s", file_name);
-  printf("\n  Press any key to continue...");
-  getch();
 
   manage_data(file_props);
 
@@ -380,6 +435,7 @@ void add_cont(file_t *file_props)
   int listed = 0;
   int i;
 
+  system("cls");
   printf("\n\n  Please type in the question to add: \n\n  - ");
   scanf(" %[^\n]", new_question);
 
@@ -449,9 +505,6 @@ void add_cont(file_t *file_props)
 
 void add_record(file_t *file_props)
 {
-  string20_t import_options[2] = { "Yes", "No" };
-
-  int select;
 
   if (file_props->size)
   {
@@ -459,21 +512,8 @@ void add_record(file_t *file_props)
   }
   else
   {
-    select = display_options("You have not imported a file! Import one?\n\n", import_options, 2);
-
-    switch (select)
-    {
-      case 0:
-        system("cls");
-        file_props->size = import_data(file_props);	// import fallback
-        add_cont(file_props);
-
-        break;
-      case 1:
-        display_menu(file_props);	// no size
-
-        break;
-    }
+    prompt_import(file_props);
+    add_cont(file_props);
   }
 }
 
@@ -482,37 +522,20 @@ void delete_cont(file_t *file_props)
   string20_t topics[100];	// 100 worst case scenario possible topics
  	// variable *sized array in switch case is
  	// forbidden
-  int topic_count = 0;
+  size_t topic_count = 0;
   int i;
   int j;
-  int in ;
   int q_num;
   int selected;
   char select;
   int sel_topic;
 
- 	// generate list of unique topics.
-  for (i = 0; i < file_props->size; i++)
-  {
-  	in = 0;
-    for (j = 0; j < i; j++)
-    {
-      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
-      {
-      	in = 1;
-      }
-    }
-
-    if (! in)
-    {
-      strcpy(topics[topic_count], file_props->questions[i].topic);
-      topic_count++;
-    }
-  }
+  // generate list of unique topics.
+  find_unique_topics(file_props, topics, &topic_count);
 
   system("cls");
  	// remember this is an int
-  sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count - 1);
+  sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
 
  	// show all questions under that topic
   for (i = 0; i < file_props->size; i++)
@@ -563,7 +586,28 @@ void delete_cont(file_t *file_props)
 
           system("cls");
           printf("\n\n  Record deleted.");
-          printf("\n\n  Press any key to continue...");
+          // decrement all here
+          for (j = 0; j < file_props->size; j++)
+          {
+            if (!strcmp(topics[sel_topic], file_props->questions[j].topic))
+            {
+                // if same
+                // topic as
+                // deleted
+              if (file_props->questions[j].q_number > q_num)
+              {
+                // if q_number is
+                // greater than the
+                // deleted it will
+                // be shifted left
+                file_props->questions[j].q_number -= 1;
+              }
+            }
+          }
+
+          printf("\n\n Press any key to continue...\n");
+          getch();
+          manage_data(file_props);
         }
         else if (select == 'n' || select == 'N')
         {
@@ -575,72 +619,22 @@ void delete_cont(file_t *file_props)
     }
   }
 
- 	// decrement all here
-  for (j = 0; j < file_props->size; j++)
-  {
-    if (!strcmp(topics[sel_topic], file_props->questions[j].topic))
-    {
-     	// if same
-     	// topic as
-     	// deleted
-      if (file_props->questions[j].q_number > q_num)
-      {
-       	// if q_number is
-       	// greater than the
-       	// deleted it will
-       	// be shifted left
-        file_props->questions[j].q_number -= 1;
-      }
-    }
-  }
 
- 	// print new list
-  if (file_props->size < 7)
-  {
-   	// dont print if too big
-    printf("\n\nNew List: \n\n");
-    for (i = 0; i < file_props->size; i++)
-    {
-      print_question(file_props->questions[i]);
-    }
-  }
-
-  printf("\n\n Press any key to continue...\n");
-  getch();
-  manage_data(file_props);
 
 }
 
 void delete_record(file_t *file_props)
 {
-  int init_size = 0;
-  int select;
-  string20_t import_options[2] = { "Yes", "No" };
 
   if (file_props->size)
   {
-   	// if array already imported, size will be initialized.
+    // if array already imported, size will be initialized.
     delete_cont(file_props);
   }
   else
   {
-    select = display_options("You have not imported a file! Import one?\n\n", import_options, 2);
-
-    switch (select)
-    {
-      case 0:
-
-        system("cls");
-        init_size = import_data(file_props);	// import fallback
-        file_props->size = init_size;
-
-        delete_cont(file_props);
-
-        break;
-      case 1:
-        display_menu(file_props);	// no size
-        break;
-    }
+    prompt_import(file_props);
+    delete_cont(file_props);
   }
 }
 
@@ -656,11 +650,11 @@ void manage_data(file_t *file_props)
   enum
   {
     ADD = 0,
-      EDIT = 1,
-      DELETE = 2,
-      IMPORT = 3,
-      EXPORT = 4,
-      BACK = 5
+    EDIT = 1,
+    DELETE = 2,
+    IMPORT = 3,
+    EXPORT = 4,
+    BACK = 5
   };
 
   if (!logged_in) logged_in = prompt_password();
@@ -711,36 +705,14 @@ void manage_data(file_t *file_props)
   }
 }
 
-// ================================= PLAY LOGIC ========================
+// ------------------------------END OF MANAGE DATA FUNCTIONS ---------------
 
-void play(file_t * file_props)
+void play(question_t *questions)
 {
-
-  int score = 0;
-  string30_t player_name;
-
-  system("cls");
-  printf("\n  What is your name?");
-  printf("\n   - ");
-
-  scanf(" %[^\n]", player_name);
-
-
-
-  while (!game_over) {
-
-    display_options("Please select a topic.\n\n", curr_topics,);
-
-
-
-
-  }
-
-
+  printf("Play here");
 }
 
-
-void play_menu(file_t * file_props)
+void play_menu(question_t *questions)
 {
   enum
   {
@@ -756,7 +728,7 @@ void play_menu(file_t * file_props)
   switch (select)
   {
     case 0:
-      play(file_props);
+      play(questions);
       break;
     case 1:
       break;
@@ -765,8 +737,6 @@ void play_menu(file_t * file_props)
       break;
   }
 }
-
-// ====================================== END OF PLAY LOGIC =====
 
 void display_menu(file_t *file_props)
 {
@@ -784,7 +754,6 @@ void display_menu(file_t *file_props)
   switch (selected)
   {
     case PLAY:
-      play_menu(file_props);
       break;
     case MANAGE:
       manage_data(file_props);
@@ -793,7 +762,6 @@ void display_menu(file_t *file_props)
       break;
   }
 }
-
 
 int main(int argc, char **argv)
 {
