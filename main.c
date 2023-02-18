@@ -711,6 +711,8 @@ void manage_data(file_t *file_props)
   }
 }
 
+// ================================= PLAY LOGIC ========================
+
 void play(question_t *questions)
 {
   printf("Play here");
@@ -766,6 +768,7 @@ void display_menu(file_t *file_props)
       break;
   }
 }
+
 
 int main(int argc, char **argv)
 {
