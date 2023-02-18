@@ -18,7 +18,7 @@ Technology
 1
 Which part of the motherboard is responsible for keeping track of the time?
 CMOS Battery
-Southbridge
+Northbridge
 CPU Socket
 CMOS Battery
 

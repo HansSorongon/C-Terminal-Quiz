@@ -17,6 +17,25 @@ typedef char string30_t[30];
 typedef char string150_t[150];
 
 // main structure for questions
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+// try adding typedefs for each string
+
+// function prot for
+void display_menu();
+void manage_data();
+int import_data();
+void delete_cont();
+
+typedef char string20_t[20];
+typedef char string30_t[30];
+typedef char string150_t[150];
+
+// main structure for questions
 typedef struct
 {
   string20_t topic;
@@ -162,9 +181,10 @@ void print_question(question_t question)
 }
 
 // prompt if not yet imported
-void prompt_import(file_t *file_props) {
-
+void prompt_import(file_t *file_props)
+{
   string20_t import_options[2] = { "Yes", "No" };
+
   int select = display_options("  You have not imported a file! Import one?\n\n", import_options, 2);
   int init_size = 0;
 
@@ -183,26 +203,29 @@ void prompt_import(file_t *file_props) {
   }
 }
 
-void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topic_count) {
+void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topic_count)
+{
   int i, j;
   int in = 0;
   int count = 0;
 
-  for (i = 0; i < file_props->size; i++) {
-    in = 0;
-    for (j = 0; j < i; j++) {
-
-      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) { // if dupe
+  for (i = 0; i < file_props->size; i++)
+  {
+  	in = 0;
+    for (j = 0; j < i; j++)
+    {
+      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
+      {
+      	// if dupe
         in = 1;
       }
-
     }
 
-    if (!in) {
+    if (! in)
+    {
       strcpy(topics[count], file_props->questions[i].topic);
       count++;
     }
-
   }
 
   *topic_count = count;
@@ -211,12 +234,11 @@ void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topi
 
 void edit_record(file_t *file_props)
 {
-
-  if (file_props->size) {
-
+  if (file_props->size)
+  {
     string20_t topics[100];	// 100 worst case scenario possible topics
-          // variable *sized array in switch case is
-          // forbidden
+   	// variable *sized array in switch case is
+   	// forbidden
     size_t topic_count = 0;
     int i;
 
@@ -224,22 +246,22 @@ void edit_record(file_t *file_props)
     int sel_topic;
     int select;
 
-    find_unique_topics(file_props, topics, &topic_count); // create list of
-                                                          // unique topics
+    find_unique_topics(file_props, topics, &topic_count);	// create list of
+   	// unique topics
 
     strcpy(topics[topic_count], "Back");	// append Back to topics array
 
     printf("\n");
-    sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count );
+    sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count + 1);
 
-          // BACK
+   	// BACK
     if (sel_topic == topic_count)
     {
       manage_data(file_props);
     }
     else
     {
-          // display all under that topic
+     	// display all under that topic
       system("cls");
       for (i = 0; i < file_props->size; i++)
       {
@@ -254,22 +276,22 @@ void edit_record(file_t *file_props)
 
       for (i = 0; i < file_props->size; i++)
       {
-          // NOTE: i here will be the index of the selected question
-          // if topic matches selected AND question number matches entered
+       	// NOTE: i here will be the index of the selected question
+       	// if topic matches selected AND question number matches entered
         if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number))
         {
-          // file_props->questions[i] is the question
+         	// file_props->questions[i] is the question
 
           system("cls");
           print_question(file_props->questions[i]);
           printf("\n\n  Which field would you like to edit?\n\n");
 
-          printf("  [1] Topic\n");
-          printf("  [2] Question\n");
-          printf("  [3] Choice A\n");
-          printf("  [4] Choice B\n");
-          printf("  [5] Choice C\n");
-          printf("  [6] Answer\n\n");
+          printf(" [1] Topic\n");
+          printf(" [2] Question\n");
+          printf(" [3] Choice A\n");
+          printf(" [4] Choice B\n");
+          printf(" [5] Choice C\n");
+          printf(" [6] Answer\n\n");
 
           select = getch();
           printf("You selected: %d", select - 48);
@@ -306,11 +328,12 @@ void edit_record(file_t *file_props)
         }
       }
     }
-  } else
-    {
-      prompt_import(file_props);
-      edit_record(file_props);
-    }
+  }
+  else
+  {
+    prompt_import(file_props);
+    edit_record(file_props);
+  }
 }
 
 int import_data(file_t *file_props)
@@ -382,8 +405,8 @@ int import_data(file_t *file_props)
 void
 export (file_t *file_props)
 {
-
-  if (file_props->size) {
+  if (file_props->size)
+  {
     string30_t file_name;
     int i;
 
@@ -393,7 +416,7 @@ export (file_t *file_props)
     FILE *fptr = fopen(file_name, "w+");	// need file name
     char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
 
-          // export
+   	// export
     for (i = 0; i < file_props->size; i++)
     {
       fprintf(fptr, format,
@@ -411,7 +434,9 @@ export (file_t *file_props)
     printf("\n\n  Successfully exported file %s", file_name);
     printf("\n  Press any key to continue...");
     getch();
-  } else {
+  }
+  else
+  {
     printf("\n\n  You have not imported a file yet!\n");
     printf("\n  Press any key to continue...\n");
     getch();
@@ -505,7 +530,6 @@ void add_cont(file_t *file_props)
 
 void add_record(file_t *file_props)
 {
-
   if (file_props->size)
   {
     add_cont(file_props);
@@ -530,7 +554,7 @@ void delete_cont(file_t *file_props)
   char select;
   int sel_topic;
 
-  // generate list of unique topics.
+ 	// generate list of unique topics.
   find_unique_topics(file_props, topics, &topic_count);
 
   system("cls");
@@ -586,20 +610,20 @@ void delete_cont(file_t *file_props)
 
           system("cls");
           printf("\n\n  Record deleted.");
-          // decrement all here
+         	// decrement all here
           for (j = 0; j < file_props->size; j++)
           {
             if (!strcmp(topics[sel_topic], file_props->questions[j].topic))
             {
-                // if same
-                // topic as
-                // deleted
+             	// if same
+             	// topic as
+             	// deleted
               if (file_props->questions[j].q_number > q_num)
               {
-                // if q_number is
-                // greater than the
-                // deleted it will
-                // be shifted left
+               	// if q_number is
+               	// greater than the
+               	// deleted it will
+               	// be shifted left
                 file_props->questions[j].q_number -= 1;
               }
             }
@@ -618,17 +642,13 @@ void delete_cont(file_t *file_props)
       }
     }
   }
-
-
-
 }
 
 void delete_record(file_t *file_props)
 {
-
   if (file_props->size)
   {
-    // if array already imported, size will be initialized.
+   	// if array already imported, size will be initialized.
     delete_cont(file_props);
   }
   else
@@ -650,11 +670,11 @@ void manage_data(file_t *file_props)
   enum
   {
     ADD = 0,
-    EDIT = 1,
-    DELETE = 2,
-    IMPORT = 3,
-    EXPORT = 4,
-    BACK = 5
+      EDIT = 1,
+      DELETE = 2,
+      IMPORT = 3,
+      EXPORT = 4,
+      BACK = 5
   };
 
   if (!logged_in) logged_in = prompt_password();
