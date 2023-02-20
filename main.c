@@ -438,6 +438,7 @@ export (file_t *file_props)
   }
   else
   {
+    system("cls");
     printf("\n\n  You have not imported a file yet!\n");
     printf("\n  Press any key to continue...\n");
     getch();
@@ -490,6 +491,7 @@ void add_cont(file_t *file_props)
 
     printf("\n\n Topic: ");
     scanf(" %[^\n]", new_topic);
+
     printf("\n\n Choice 1: ");
     scanf(" %[^\n]", new_choice1);
     printf("\n\n Choice 2: ");
@@ -733,12 +735,14 @@ void play(file_t file_props) // play can just receive the value of file_props
 {
 
   string30_t name;
-  int score = 0;
+  unsigned int score = 0;
   int game_over = 0;
   int select;
   int i;
   int j;
   int random_index;
+  char choice;
+  string30_t user_answer;
 
   topics_t topic_list; // this not only is the list of topics but the topics
                        // but the size as well
@@ -806,12 +810,42 @@ void play(file_t file_props) // play can just receive the value of file_props
         delay(1);
     } else {
       random_index = topic_map[select].indices[rand() % topic_map[select].length];
-      print_question(file_props.questions[random_index]); // random index
-      getch();
+
+      system("cls");
+
+      printf("\n Score: %u", score);
+
+      printf("\n\n %s", file_props.questions[random_index].question);
+      printf("\n\n [1] %s", file_props.questions[random_index].choice1);
+      printf("\n [2] %s", file_props.questions[random_index].choice2);
+      printf("\n [3] %s", file_props.questions[random_index].choice3);
+
+      printf("\n\n Your choice: ");
+      choice = getch();
+
+      switch (choice) {
+        case '1':
+          strcpy(user_answer, file_props.questions[random_index].choice1);
+          break;
+        case '2':
+          strcpy(user_answer, file_props.questions[random_index].choice2);
+          break;
+         case '3':
+          strcpy(user_answer, file_props.questions[random_index].choice3);
+          break;
+      }
+
+      if (!strcmp(user_answer, file_props.questions[random_index].answer)) {
+        score += 10;
+        printf("\n\n Correct!");
+        delay(0.5);
+      } else {
+        printf("\n\n Wrong!");
+        delay(0.5);
+
+      }
     }
-
   }
-
   display_menu(&file_props);
 }
 

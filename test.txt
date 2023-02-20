@@ -14,14 +14,6 @@ North America
 Europe
 Asia
 
-Technology
-1
-Which part of the motherboard is responsible for keeping track of the time?
-CMOS Battery
-Northbridge
-CPU Socket
-CMOS Battery
-
 CCICOMP
 1
 Which part of the motherboard is responsible for the slower processes?
@@ -29,4 +21,28 @@ CMOS Battery
 Southbridge
 CPU Socket
 Southbridge
+
+CCICOMP
+2
+Which part of the motherboard is responsible for keeping track of the time?
+CMOS Battery
+Northbridge
+CPU Socket
+CMOS Battery
+
+CCICOMP
+3
+Which protocol layer is responsible for the routing of data transfer?
+Network Layer
+Application Layer
+Transport Layer
+Network Layer
+
+CCICOMP
+4
+What do you call the point at which competitive ISPs connect with each other?
+Internet Exchange Point
+Internet Service Provider
+Global ISP
+Internet Exchange Point
 
