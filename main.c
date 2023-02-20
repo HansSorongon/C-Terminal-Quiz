@@ -51,8 +51,8 @@ question_t;
 
 typedef struct
 {
-  string20_t topics[100];
-  size_t size;
+  string20_t topics[101]; // we'll store Back in the same list
+  size_t topic_count;
 }
 
 topics_t;
@@ -203,6 +203,7 @@ void prompt_import(file_t *file_props)
   }
 }
 
+// reformat this to return struct
 void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topic_count)
 {
   int i, j;
@@ -727,12 +728,94 @@ void manage_data(file_t *file_props)
 
 // ------------------------------END OF MANAGE DATA FUNCTIONS ---------------
 
-void play(question_t *questions)
+void play(file_t file_props) // play can just receive the value of file_props
+                             // since we're not editing it.
 {
-  printf("Play here");
+
+  string30_t name;
+  int score = 0;
+  int game_over = 0;
+  int select;
+  int i;
+  int j;
+  int random_index;
+
+  topics_t topic_list; // this not only is the list of topics but the topics
+                       // but the size as well
+
+  // topic_map has the same length as topic_count
+  struct map {
+    string30_t key;
+    int length;
+    int indices[100]; // 100 possible indices worst case
+  } topic_map[100]; // 100 worst case unique topics
+                      //
+
+  // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
+
+  // we put back in the list of topics so it can appear in the same select
+  // screen.
+
+  find_unique_topics(&file_props, topic_list.topics, &topic_list.topic_count);
+  strcpy(topic_list.topics[topic_list.topic_count], "Back"); // at very last index
+
+
+  for (i = 0; i < topic_list.topic_count; i++) { // append with list of topics
+    strcpy(topic_map[i].key, topic_list.topics[i]);
+    topic_map[i].length = 0; // init to 0
+  }
+
+  for (i = 0; i < file_props.size; i++) { // increment each value based on
+                                           // count of questions under x topic.
+    for (j = 0; j < topic_list.topic_count; j++) {
+
+      if (!strcmp(file_props.questions[i].topic, topic_map[j].key)) {
+        topic_map[j].indices[topic_map[j].length] = i;
+        topic_map[j].length++; // length of each topic
+      }
+    }
+  }
+
+  // display values of map we just created FOR DEBUGGING
+  /* for (i = 0; i < topic_list.topic_count; i++) { */
+  /*   printf("KEY: %s\n", topic_map[i].key); */
+  /*   printf("VALUE: %d\n\n", topic_map[i].length); */
+  /*   for (j = 0; j < topic_map[i].length; j++) { */
+  /*     printf("%d ", topic_map[i].indices[j]); */
+  /*   } */
+  /*   printf("]\n\n"); */
+  /* } */
+
+  // select a random index from the list of indices we have under the same
+  // topic and then display that
+
+  system("cls");
+  printf("\n  What is your name?");
+  printf("\n  - ");
+  scanf(" %[^\n]", name);
+
+  while (!game_over) { // not game over or not
+                                                    // back
+
+    system("cls");
+    select = display_options("\n\n  Please select a topic.\n\n", topic_list.topics, topic_list.topic_count + 1);
+
+    if (select == topic_list.topic_count) {
+        printf("\n\nThank you for playing!");
+        game_over = 1;
+        delay(1);
+    } else {
+      random_index = topic_map[select].indices[rand() % topic_map[select].length];
+      print_question(file_props.questions[random_index]); // random index
+      getch();
+    }
+
+  }
+
+  display_menu(&file_props);
 }
 
-void play_menu(question_t *questions)
+void play_menu(file_t file_props)
 {
   enum
   {
@@ -748,12 +831,12 @@ void play_menu(question_t *questions)
   switch (select)
   {
     case 0:
-      play(questions);
+      play(file_props);
       break;
     case 1:
       break;
     case 2:
-      display_menu();
+      display_menu(file_props);
       break;
   }
 }
@@ -774,6 +857,8 @@ void display_menu(file_t *file_props)
   switch (selected)
   {
     case PLAY:
+      play_menu(*file_props); // dereference here instead of passing pointer
+                              // for safety
       break;
     case MANAGE:
       manage_data(file_props);
@@ -785,7 +870,10 @@ void display_menu(file_t *file_props)
 
 int main(int argc, char **argv)
 {
- 	// *questions always comes with *size
+
+  // *questions always comes with *size
+  //
+  srand((unsigned)time(NULL));
 
   file_t file_props;	// def struct for file holding questions, size, and file
  	// name
