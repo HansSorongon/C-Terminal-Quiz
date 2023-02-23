@@ -17,25 +17,6 @@ typedef char string30_t[30];
 typedef char string150_t[150];
 
 // main structure for questions
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-// try adding typedefs for each string
-
-// function prot for
-void display_menu();
-void manage_data();
-int import_data();
-void delete_cont();
-
-typedef char string20_t[20];
-typedef char string30_t[30];
-typedef char string150_t[150];
-
-// main structure for questions
 typedef struct
 {
   string20_t topic;
