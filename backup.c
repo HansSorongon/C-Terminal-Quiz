@@ -15,7 +15,7 @@ int prompt_import();
 void find_unique_topics();
 void edit_record();
 int import_data();
-void export ();
+void export();
 void add_cont();
 void add_record();
 void delete_cont();
@@ -44,7 +44,7 @@ question_t;
 
 typedef struct
 {
-  string30_t topics[101];	// we'll store Back in the same list
+  string30_t topics[101]; // we'll store Back in the same list
   size_t topic_count;
 }
 
@@ -215,7 +215,7 @@ void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topi
     {
       if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
       {
-       	// if dupe
+      	// if dupe
         in = 1;
       }
     }
@@ -285,12 +285,12 @@ void edit_record(file_t *file_props)
           print_question(file_props->questions[i]);
           printf("\n\n  Which field would you like to edit?\n\n");
 
-          printf("[1] Topic\n");
-          printf("[2] Question\n");
-          printf("[3] Choice A\n");
-          printf("[4] Choice B\n");
-          printf("[5] Choice C\n");
-          printf("[6] Answer\n\n");
+          printf(" [1] Topic\n");
+          printf(" [2] Question\n");
+          printf(" [3] Choice A\n");
+          printf(" [4] Choice B\n");
+          printf(" [5] Choice C\n");
+          printf(" [6] Answer\n\n");
 
           select = getch();
           printf("You selected: %d", select - 48);
@@ -330,12 +330,9 @@ void edit_record(file_t *file_props)
   }
   else
   {
-    if (prompt_import(file_props))
-    {
+    if (prompt_import(file_props)) {
       edit_record(file_props);
-    }
-    else
-    {
+    } else {
       manage_data(file_props);
     }
   }
@@ -543,12 +540,9 @@ void add_record(file_t *file_props)
   }
   else
   {
-    if (prompt_import(file_props))
-    {
+    if (prompt_import(file_props)) {
       add_cont(file_props);
-    }
-    else
-    {
+    } else {
       manage_data(file_props);
     }
   }
@@ -666,12 +660,9 @@ void delete_record(file_t *file_props)
   }
   else
   {
-    if (prompt_import(file_props))
-    {
+    if (prompt_import(file_props)) {
       delete_cont(file_props);
-    }
-    else
-    {
+    } else {
       manage_data(file_props);
     }
   }
@@ -746,9 +737,10 @@ void manage_data(file_t *file_props)
 
 // ------------------------------END OF MANAGE DATA FUNCTIONS ---------------
 
-void play(file_t file_props, FILE *fptr)	// play can just receive the value of file_props
-// since we're not editing it.
+void play(file_t file_props, FILE *fptr) // play can just receive the value of file_props
+                             // since we're not editing it.
 {
+
   string30_t name;
   unsigned int score = 0;
   int game_over = 0;
@@ -759,61 +751,54 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   char choice;
   string30_t user_answer;
 
-  topics_t topic_list;	// this not only is the list of topics but the topics
- 	// but the size as well
+  topics_t topic_list; // this not only is the list of topics but the topics
+                       // but the size as well
 
- 	// topic_map has the same length as topic_count
-  struct map
-  {
+  // topic_map has the same length as topic_count
+  struct map {
     string30_t key;
     int length;
-    int indices[100];	// 100 possible indices worst case
-  }
+    int indices[100]; // 100 possible indices worst case
+  } topic_map[100]; // 100 worst case unique topics
+                      //
 
-  topic_map[100];	// 100 worst case unique topics
- 	//
+  // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
 
- 	// THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
-
- 	// we put back in the list of topics so it can appear in the same select
- 	// screen.
+  // we put back in the list of topics so it can appear in the same select
+  // screen.
 
   find_unique_topics(&file_props, topic_list.topics, &topic_list.topic_count);
-  strcpy(topic_list.topics[topic_list.topic_count], "Back");	// at very last index
+  strcpy(topic_list.topics[topic_list.topic_count], "Back"); // at very last index
 
-  for (i = 0; i < topic_list.topic_count; i++)
-  {
-  	// append with list of topics
+
+  for (i = 0; i < topic_list.topic_count; i++) { // append with list of topics
     strcpy(topic_map[i].key, topic_list.topics[i]);
-    topic_map[i].length = 0;	// init to 0
+    topic_map[i].length = 0; // init to 0
   }
 
-  for (i = 0; i < file_props.size; i++)
-  {
-  	// increment each value based on
-   	// count of questions under x topic.
-    for (j = 0; j < topic_list.topic_count; j++)
-    {
-      if (!strcmp(file_props.questions[i].topic, topic_map[j].key))
-      {
+  for (i = 0; i < file_props.size; i++) { // increment each value based on
+                                           // count of questions under x topic.
+    for (j = 0; j < topic_list.topic_count; j++) {
+
+      if (!strcmp(file_props.questions[i].topic, topic_map[j].key)) {
         topic_map[j].indices[topic_map[j].length] = i;
-        topic_map[j].length++;	// length of each topic
+        topic_map[j].length++; // length of each topic
       }
     }
   }
 
- 	// display values of map we just created FOR DEBUGGING
-  /*for (i = 0; i < topic_list.topic_count; i++) { */
-  /*  printf("KEY: %s\n", topic_map[i].key); */
-  /*  printf("VALUE: %d\n\n", topic_map[i].length); */
-  /*  for (j = 0; j < topic_map[i].length; j++) { */
-  /*    printf("%d ", topic_map[i].indices[j]); */
+  // display values of map we just created FOR DEBUGGING
+  /* for (i = 0; i < topic_list.topic_count; i++) { */
+  /*   printf("KEY: %s\n", topic_map[i].key); */
+  /*   printf("VALUE: %d\n\n", topic_map[i].length); */
+  /*   for (j = 0; j < topic_map[i].length; j++) { */
+  /*     printf("%d ", topic_map[i].indices[j]); */
   /*   } */
-  /*  printf("]\n\n"); */
-  /*} */
+  /*   printf("]\n\n"); */
+  /* } */
 
- 	// select a random index from the list of indices we have under the same
- 	// topic and then display that
+  // select a random index from the list of indices we have under the same
+  // topic and then display that
 
   system("cls");
   printf("\n  What is your name?");
@@ -822,64 +807,55 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
 
   string30_t current_choices[3];
 
-  while (!game_over)
-  {
-  	// not game over or not
+  while (!game_over) { // not game over or not
 
     system("cls");
     select = display_options("Please select a topic.", topic_list.topics, topic_list.topic_count + 1);
 
-    if (select == topic_list.topic_count)
-    {
-    	// if back was selected
-      printf("\n\n Thank you for playing!");
-      printf("\n Your final score is %d.", score);
+    if (select == topic_list.topic_count) { // if back was selected
+        printf("\n\n Thank you for playing!");
+        printf("\n Your final score is %d.", score);
 
-     	// export score here. when done exporting, close
-      fprintf(fptr, "%s\n%d\n\n", name, score);
-      fclose(fptr);
+        // export score here. when done exporting, close
+        fprintf(fptr, "%s\n%d\n\n", name, score);
+        fclose(fptr);
 
-      game_over = 1;
-      delay(1);
-    }
-    else
-    {
+        game_over = 1;
+        delay(1);
+    } else {
       random_index = topic_map[select].indices[rand() % topic_map[select].length];
 
       system("cls");
 
       printf("\n Score: %u", score);
 
-     	// current questions into a list
+      // current questions into a list
       strcpy(current_choices[0], file_props.questions[random_index].choice1);
       strcpy(current_choices[1], file_props.questions[random_index].choice2);
       strcpy(current_choices[2], file_props.questions[random_index].choice3);
 
-      choice = display_options(file_props.questions[random_index].question, current_choices, 3);	// display the choices
+      choice = display_options(file_props.questions[random_index].question, current_choices, 3); // display the choices
 
-      switch (choice)
-      {
+      switch (choice) {
         case 0:
           strcpy(user_answer, file_props.questions[random_index].choice1);
           break;
         case 1:
           strcpy(user_answer, file_props.questions[random_index].choice2);
           break;
-        case 2:
+         case 2:
           strcpy(user_answer, file_props.questions[random_index].choice3);
           break;
       }
 
-      if (!strcmp(user_answer, file_props.questions[random_index].answer))
-      {
+      if (!strcmp(user_answer, file_props.questions[random_index].answer)) {
         score += 10;
         printf("\n Correct! + 10!");
         delay(0.5);
-      }
-      else
-      {
+      } else {
         printf("\n Wrong!");
         delay(0.5);
+
       }
     }
   }
@@ -887,32 +863,27 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   display_menu(&file_props);
 }
 
-void view_scores(file_t file_props, FILE *fptr)
-{
-  struct player
-  {
+void view_scores(file_t file_props, FILE *fptr) {
+
+  struct player {
     string30_t name;
     int score;
-  }
-
-  players[100];
+  } players[100];
 
   size_t count = 0;
   char format[12] = "%[^\n]\n%d\n";
 
-  while (!feof(fptr))
-  {
+  while (!feof(fptr)) {
     fscanf(fptr, format, players[count].name, &players[count].score);
     count++;
   }
 
-  fclose(fptr);	// close here to be reopened when play_menu gets called again
+  fclose(fptr); // close here to be reopened when play_menu gets called again
 
   system("cls");
   printf("\n\n  %-5s | %-12s | %-6s\n", "NO.", "NAME", "SCORE");
 
-  for (int i = 0; i < count; i++)
-  {
+  for (int i = 0; i < count; i++) {
     printf("  %-5d | %-12s | %-6d\n", i + 1, players[i].name, players[i].score);
   }
 
@@ -927,13 +898,13 @@ void play_menu(file_t file_props)
   enum
   {
     PLAY = 0,
-      VIEW = 1,
-      BACK = 2
+    VIEW = 1,
+    BACK = 2
   };
 
   string30_t play_options[3] = { "I'm Ready", "View Scores", "Back" };
 
-  FILE * fptr;
+  FILE *fptr;
   fptr = fopen("score.txt", "a+");
 
   int select = display_options("Welcome challenger, are you ready?", play_options, 3);
@@ -945,10 +916,10 @@ void play_menu(file_t file_props)
       play(file_props, fptr);
       break;
     case VIEW:
-      view_scores(file_props, fptr);	// pass file props for recursion
+      view_scores(file_props, fptr); // pass file props for recursion
       break;
     case BACK:
-      display_menu(&file_props);	// only this one passes address
+      display_menu(&file_props); // only this one passes address
       break;
   }
 }
@@ -957,7 +928,7 @@ void display_menu(file_t *file_props)
 {
   enum
   {
-    PLAY = 0,
+      PLAY = 0,
       MANAGE = 1,
       EXIT = 2
   };
@@ -969,8 +940,8 @@ void display_menu(file_t *file_props)
   switch (selected)
   {
     case PLAY:
-      play_menu(*file_props);	// dereference here instead of passing pointer
-     	// for safety
+      play_menu(*file_props); // dereference here instead of passing pointer
+                              // for safety
       break;
     case MANAGE:
       manage_data(file_props);
@@ -982,9 +953,10 @@ void display_menu(file_t *file_props)
 
 int main(int argc, char **argv)
 {
- 	// *questions always comes with *size
- 	//
-  srand((unsigned) time(NULL));
+
+  // *questions always comes with *size
+  //
+  srand((unsigned)time(NULL));
 
   file_t file_props;	// def struct for file holding questions, size, and file
  	// name
