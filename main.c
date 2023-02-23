@@ -906,12 +906,34 @@ void view_scores(file_t file_props, FILE *fptr)
     count++;
   }
 
+  // SORT
+
+  int i, j, min_idx;
+  struct player temp;
+
+  for (i = 0; i < count - 1; i++) {
+    min_idx = i;
+
+    for (j = i; j < count; j++) {
+      if (players[j].score > players[min_idx].score)
+        min_idx = j;
+    }
+
+    if (min_idx != i) {
+
+      temp = players[min_idx];
+      players[min_idx] = players[i];
+      players[i] = temp;
+
+    }
+  }
+
   fclose(fptr);	// close here to be reopened when play_menu gets called again
 
   system("cls");
   printf("\n\n  %-5s | %-12s | %-6s\n", "NO.", "NAME", "SCORE");
 
-  for (int i = 0; i < count; i++)
+  for (i = 0; i < count; i++)
   {
     printf("  %-5d | %-12s | %-6d\n", i + 1, players[i].name, players[i].score);
   }

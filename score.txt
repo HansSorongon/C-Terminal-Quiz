@@ -1,35 +1,20 @@
 Hans
-20
+4400
 
-Aaron
-300
+Gabriel
+7200
 
-Sorongon
-2400
+Rafael
+4
 
-Test
-344030
-Hans
-0
+Gamaliel
+4200
 
-Hans
-20
+Lars
+81000
 
-Yeeted
-0
+Dylan
+3300
 
-Hans
-20
-
-Hans
-10
-
-Hans
-0
-
-Hans
-130
-
-Hans
-70
-
+Julian
+7200
