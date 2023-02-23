@@ -11,15 +11,15 @@ void display_menu();
 void manage_data();
 int import_data();
 void delete_cont();
+void play_menu();
 
-typedef char string20_t[20];
 typedef char string30_t[30];
 typedef char string150_t[150];
 
 // main structure for questions
 typedef struct
 {
-  string20_t topic;
+  string30_t topic;
   int q_number;
   string150_t question;
   string30_t choice1;
@@ -32,7 +32,7 @@ question_t;
 
 typedef struct
 {
-  string20_t topics[101]; // we'll store Back in the same list
+  string30_t topics[101]; // we'll store Back in the same list
   size_t topic_count;
 }
 
@@ -56,7 +56,7 @@ void delay(float seconds)
 }
 
 // returns selected
-int display_options(string150_t prompt, string20_t options[], size_t num_options)
+int display_options(string150_t prompt, string30_t options[], size_t num_options)
 {
   int select = 0;
   int selected = 0;
@@ -67,7 +67,7 @@ int display_options(string150_t prompt, string20_t options[], size_t num_options
   {
     system("cls");
 
-    printf("%s", prompt);
+    printf("\n  %s\n\n", prompt);
 
     for (i = 0; i < num_options; i++)
     {
@@ -120,13 +120,13 @@ int prompt_password()
   int i;
 
   system("cls");
-  printf("Password: ");
+  printf("\n Password: ");
   while (ch != 13)
   {
    	// while not enter
     ch = getch();
     system("cls");
-    printf("Password: ");
+    printf("\n Password: ");
 
     if (ch == 8 && strlen(inp) > 0)
     {
@@ -164,9 +164,9 @@ void print_question(question_t question)
 // prompt if not yet imported
 void prompt_import(file_t *file_props)
 {
-  string20_t import_options[2] = { "Yes", "No" };
+  string30_t import_options[2] = { "Yes", "No" };
 
-  int select = display_options("  You have not imported a file! Import one?\n\n", import_options, 2);
+  int select = display_options("You have not imported a file! Import one?", import_options, 2);
   int init_size = 0;
 
   switch (select)
@@ -185,7 +185,7 @@ void prompt_import(file_t *file_props)
 }
 
 // reformat this to return struct
-void find_unique_topics(file_t *file_props, string20_t topics[100], size_t *topic_count)
+void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topic_count)
 {
   int i, j;
   int in = 0;
@@ -218,7 +218,7 @@ void edit_record(file_t *file_props)
 {
   if (file_props->size)
   {
-    string20_t topics[100];	// 100 worst case scenario possible topics
+    string30_t topics[100];	// 100 worst case scenario possible topics
    	// variable *sized array in switch case is
    	// forbidden
     size_t topic_count = 0;
@@ -234,7 +234,7 @@ void edit_record(file_t *file_props)
     strcpy(topics[topic_count], "Back");	// append Back to topics array
 
     printf("\n");
-    sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count + 1);
+    sel_topic = display_options("Please choose a topic.", topics, topic_count + 1);
 
    	// BACK
     if (sel_topic == topic_count)
@@ -363,9 +363,9 @@ int import_data(file_t *file_props)
 
   if (fptr)
   {
-    string20_t confirm_options[2] = { "Yes", "No" };
+    string30_t confirm_options[2] = { "Yes", "No" };
 
-    confirm = display_options("  Would you like to display the contents?\n\n", confirm_options, 2);
+    confirm = display_options("Would you like to display the contents?", confirm_options, 2);
 
     if (!confirm)
     {
@@ -527,7 +527,7 @@ void add_record(file_t *file_props)
 
 void delete_cont(file_t *file_props)
 {
-  string20_t topics[100];	// 100 worst case scenario possible topics
+  string30_t topics[100];	// 100 worst case scenario possible topics
  	// variable *sized array in switch case is
  	// forbidden
   size_t topic_count = 0;
@@ -543,7 +543,7 @@ void delete_cont(file_t *file_props)
 
   system("cls");
  	// remember this is an int
-  sel_topic = display_options("  Please choose a topic.\n\n", topics, topic_count);
+  sel_topic = display_options("Please choose a topic.", topics, topic_count);
 
  	// show all questions under that topic
   for (i = 0; i < file_props->size; i++)
@@ -645,9 +645,9 @@ void delete_record(file_t *file_props)
 void manage_data(file_t *file_props)
 {
   static int logged_in = 0;
-  string20_t manage_options[6] = { "Add", "Edit", "Delete", "Import", "Export", "Back" };
+  string30_t manage_options[6] = { "Add", "Edit", "Delete", "Import", "Export", "Back" };
 
-  string20_t try_options[2] = { "Try Again", "Back" };
+  string30_t try_options[2] = { "Try Again", "Back" };
 
   int select;
 
@@ -665,7 +665,7 @@ void manage_data(file_t *file_props)
 
   if (logged_in)
   {
-    select = display_options("   Welcome admin, what would you like to do?\n\n", manage_options, 6);
+    select = display_options("Welcome admin, what would you like to do?", manage_options, 6);
 
     switch (select)
     {
@@ -694,7 +694,7 @@ void manage_data(file_t *file_props)
   }
   else
   {
-    select = display_options("   You entered the wrong password!\n\n", try_options, 2);
+    select = display_options("You entered the wrong password!", try_options, 2);
 
     switch (select)
     {
@@ -711,7 +711,7 @@ void manage_data(file_t *file_props)
 
 // ------------------------------END OF MANAGE DATA FUNCTIONS ---------------
 
-void play(file_t file_props) // play can just receive the value of file_props
+void play(file_t file_props, FILE *fptr) // play can just receive the value of file_props
                              // since we're not editing it.
 {
 
@@ -779,14 +779,21 @@ void play(file_t file_props) // play can just receive the value of file_props
   printf("\n  - ");
   scanf(" %[^\n]", name);
 
+  string30_t current_choices[3];
+
   while (!game_over) { // not game over or not
-                                                    // back
 
     system("cls");
-    select = display_options("\n\n  Please select a topic.\n\n", topic_list.topics, topic_list.topic_count + 1);
+    select = display_options("Please select a topic.", topic_list.topics, topic_list.topic_count + 1);
 
-    if (select == topic_list.topic_count) {
-        printf("\n\nThank you for playing!");
+    if (select == topic_list.topic_count) { // if back was selected
+        printf("\n\n Thank you for playing!");
+        printf("\n Your final score is %d.", score);
+
+        // export score here. when done exporting, close
+        fprintf(fptr, "%s\n%d\n\n", name, score);
+        fclose(fptr);
+
         game_over = 1;
         delay(1);
     } else {
@@ -796,38 +803,68 @@ void play(file_t file_props) // play can just receive the value of file_props
 
       printf("\n Score: %u", score);
 
-      printf("\n\n %s", file_props.questions[random_index].question);
-      printf("\n\n [1] %s", file_props.questions[random_index].choice1);
-      printf("\n [2] %s", file_props.questions[random_index].choice2);
-      printf("\n [3] %s", file_props.questions[random_index].choice3);
+      // current questions into a list
+      strcpy(current_choices[0], file_props.questions[random_index].choice1);
+      strcpy(current_choices[1], file_props.questions[random_index].choice2);
+      strcpy(current_choices[2], file_props.questions[random_index].choice3);
 
-      printf("\n\n Your choice: ");
-      choice = getch();
+      choice = display_options(file_props.questions[random_index].question, current_choices, 3); // display the choices
 
       switch (choice) {
-        case '1':
+        case 0:
           strcpy(user_answer, file_props.questions[random_index].choice1);
           break;
-        case '2':
+        case 1:
           strcpy(user_answer, file_props.questions[random_index].choice2);
           break;
-         case '3':
+         case 2:
           strcpy(user_answer, file_props.questions[random_index].choice3);
           break;
       }
 
       if (!strcmp(user_answer, file_props.questions[random_index].answer)) {
         score += 10;
-        printf("\n\n Correct!");
+        printf("\n Correct! + 10!");
         delay(0.5);
       } else {
-        printf("\n\n Wrong!");
+        printf("\n Wrong!");
         delay(0.5);
 
       }
     }
   }
+
   display_menu(&file_props);
+}
+
+void view_scores(file_t file_props, FILE *fptr) {
+
+  struct player {
+    string30_t name;
+    int score;
+  } players[100];
+
+  size_t count = 0;
+  char format[12] = "%[^\n]\n%d\n";
+
+  while (!feof(fptr)) {
+    fscanf(fptr, format, players[count].name, &players[count].score);
+    count++;
+  }
+
+  fclose(fptr); // close here to be reopened when play_menu gets called again
+
+  system("cls");
+  printf("\n\n  %-5s | %-12s | %-6s\n", "NO.", "NAME", "SCORE");
+
+  for (int i = 0; i < count; i++) {
+    printf("  %-5d | %-12s | %-6d\n", i + 1, players[i].name, players[i].score);
+  }
+
+  printf("\n\n Press any key to continue...");
+  getch();
+
+  play_menu(file_props);
 }
 
 void play_menu(file_t file_props)
@@ -835,23 +872,33 @@ void play_menu(file_t file_props)
   enum
   {
     PLAY = 0,
-      VIEW = 1,
-      EXIT = 2
+    VIEW = 1,
+    BACK = 2
   };
 
-  char play_options[3][20] = { "I'm Ready", "View Scores", "Exit" };
+  string30_t play_options[3] = { "I'm Ready", "View Scores", "Back" };
 
-  int select = display_options("\n    Welcome challenger, are you ready?\n\n", play_options, 3);
+  FILE *fptr;
+  fptr = fopen("score.txt", "a+");
+
+  int select = display_options("Welcome challenger, are you ready?", play_options, 3);
 
   switch (select)
   {
-    case 0:
-      play(file_props);
+    case PLAY:
+
+      // if not yet imported, ask to import
+      if (!file_props.size) { // should prompt?
+        prompt_import(&file_props);
+      }
+
+      play(file_props, fptr);
       break;
-    case 1:
+    case VIEW:
+      view_scores(file_props, fptr); // pass file props for recursion
       break;
-    case 2:
-      display_menu(file_props);
+    case BACK:
+      display_menu(&file_props); // only this one passes address
       break;
   }
 }
@@ -860,14 +907,14 @@ void display_menu(file_t *file_props)
 {
   enum
   {
-    PLAY = 0,
+      PLAY = 0,
       MANAGE = 1,
       EXIT = 2
   };
 
-  char menu_options[3][20] = { "Play", "Manage Data", "Exit" };
+  string30_t menu_options[3] = { "Play", "Manage Data", "Exit" };
 
-  int selected = display_options("\n\t----- QUIZ MASTER -----\n\n", menu_options, 3);
+  int selected = display_options("\t----- QUIZ MASTER -----", menu_options, 3);
 
   switch (selected)
   {
