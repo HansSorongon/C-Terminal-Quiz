@@ -1,0 +1,552 @@
+Art
+1
+Who painted the famous artwork "The Starry Night"?
+Claude Monet
+Vincent van Gogh
+Leonardo da Vinci
+Vincent van Gogh
+
+Art
+2
+What is the name of the famous sculpture by Michelangelo?
+Mona Lisa
+The Thinker
+David
+David
+
+Art
+3
+Who painted the ceiling of the Sistine Chapel in Vatican City?
+Leonardo da Vinci
+Raphael
+Michelangelo
+Michelangelo
+
+Art
+4
+Which art style is characterized by bright colors and bold patterns?
+Pop Art
+Surrealism
+Impressionism
+Pop Art
+
+Art
+5
+Which artist is known for his iconic painting of a can of soup?
+Andy Warhol
+Pablo Picasso
+Salvador Dali
+Andy Warhol
+
+Art
+6
+Who painted the famous mural "The Last Supper"?
+Michelangelo
+Leonardo da Vinci
+Raphael
+Leonardo da Vinci
+
+Art
+7
+What is the name of the museum in Paris that houses the Mona Lisa?
+The Louvre
+The Met
+The National Gallery
+The Louvre
+
+Art
+8
+Who is the artist that created the sculpture "The Thinker"?
+Pablo Picasso
+Vincent van Gogh
+Auguste Rodin
+Auguste Rodin
+
+Art
+9
+What is the name of the technique used by the artist Georges Seurat?
+Impressionism
+Pointillism
+Cubism
+Pointillism
+
+Art
+10
+What is the name of the painting that features a woman with a mysterious smile?
+Mona Lisa
+The Scream
+Starry Night
+Mona Lisa
+
+Art
+11
+What is the name of the ancient Greek statue that depicts a woman?
+Venus de Milo
+David
+The Thinker
+Venus de Milo
+
+Art
+12
+Who painted the famous artwork "The Persistence of Memory"?
+Claude Monet
+Vincent van Gogh
+Salvador Dali
+Salvador Dali
+
+Art
+13
+Which art style is characterized by geometric shapes and bright colors?
+Cubism
+Surrealism
+Futurism
+Cubism
+
+Art
+14
+What is the name of the famous painting by Edvard Munch?
+Starry Night
+The Scream
+The Persistence of Memory
+The Scream
+
+Art
+15
+Who painted the famous artwork "Girl with a Pearl Earring"?
+Rembrandt van Rijn
+Jan van Eyck
+Johannes Vermeer
+Johannes Vermeer
+
+Art
+16
+What is the name of the painting that features a melting watch?
+Starry Night
+Mona Lisa
+The Persistence of Memory
+The Persistence of Memory
+
+Art
+17
+Who is the artist that created the sculpture "The David"?
+Leonardo da Vinci
+Michelangelo
+Raphael
+Michelangelo
+
+Art
+18
+What is the name of the American artist who painted "Whistler's Mother"?
+Grant Wood
+James McNeill Whistler
+Edward Hopper
+James McNeill Whistler
+
+Art
+19
+Who is the artist that painted "Water Lilies"?
+Edgar Degas
+Henri Matisse
+Claude Monet
+Claude Monet
+
+Art
+20
+What is the name of the French painter who founded Fauvism?
+Paul Cézanne
+Pierre-Auguste Renoir
+Henri Matisse
+Henri Matisse
+
+Art
+21
+Which art style is characterized by exaggerated colors and forms?
+Realism
+Expressionism
+Romanticism
+Expressionism
+
+Tech
+1
+What is the name of the world's first web browser?
+Netscape Navigator
+WorldWideWeb
+Mosaic
+WorldWideWeb
+
+Tech
+2
+What does "HTTP" stand for?
+HyperText Transmission Prot.
+Hyperlink Transfer Protocol
+HyperText Transfer Protocol
+HyperText Transfer Protocol
+
+Tech
+3
+Which company developed the first commercial microprocessor?
+IBM
+AMD
+Intel
+Intel
+
+Tech
+4
+What does "WWW" stand for?
+World Wandering Web
+World Wide Web
+World Weaving Web
+World Wide Web
+
+Tech
+5
+What is the name of the first graphical web browser?
+Mosaic
+WorldWideWeb
+Netscape Navigator
+Mosaic
+
+Tech
+6
+What does "URL" stand for?
+Unified Resource Link
+Unique Resource Location
+Uniform Resource Locator
+Uniform Resource Locator
+
+Tech
+7
+Who is the founder of Apple Inc.?
+Bill Gates
+Mark Zuckerberg
+Steve Jobs
+Steve Jobs
+
+Tech
+8
+Which company developed the first personal computer?
+Apple
+Microsoft
+IBM
+IBM
+
+Tech
+9
+What does "HTML" stand for?
+Hypertextual Marking Language
+HyperText Markup Language
+Hyperlink Markup Language
+HyperText Markup Language
+
+Tech
+10
+Who invented the first computer mouse?
+Bill Gates
+Douglas Engelbart
+Steve Jobs
+Douglas Engelbart
+
+Tech
+11
+What does "ISP" stand for?
+Internet Service Provider
+Internet Server Provider
+International Service ProviderInternet Service Provider
+Internet Service Provider
+
+Tech
+12
+Who invented the World Wide Web?
+Tim Berners-Lee
+Bill Gates
+Steve Jobs
+Tim Berners-Lee
+
+Tech
+13
+Which programming language was created by James Gosling?
+Java
+Python
+Ruby
+Java
+
+Tech
+14
+Which company is the largest manufacturer of computer processors?
+AMD
+Intel
+Qualcomm
+Intel
+
+Tech
+15
+What does "VPN" stand for?
+Visual Private Network
+Virtual Public Network
+Virtual Private Network
+Virtual Private Network
+
+Tech
+16
+What does "LAN" stand for?
+Large Area Network
+Limited Area Network
+Local Area Network
+Local Area Network
+
+Tech
+17
+Who founded Microsoft Corporation?
+Bill Gates and Paul Allen
+Steve Jobs and Steve Wozniak
+Larry Page and Sergey Brin
+Bill Gates and Paul Allen
+
+Tech
+18
+What does "GUI" stand for?
+Graphical User Interface
+Graphical User Interchange
+Graphical User Input
+Graphical User Interface
+
+Tech
+19
+John Atanasoff and Clifford Berry
+Charles Babbage
+Who invented the first electroAlan Turing
+Alan Turing
+John Atanasoff and Clifford BerrTech
+
+Tech
+20
+Which programming language was developed by Guido van Rossum?
+Python
+Ruby
+Java
+Python
+
+Tech
+21
+Which company created the Android operating system?
+Microsoft
+Apple
+Google
+Google
+
+Tech
+22
+What does "SMS" stand for?
+Social Media Service
+Short Message Service
+Search Marketing Service
+Short Message Service
+
+Tech
+23
+Which company developed the first smartphone?
+Apple
+IBM
+BlackBerry
+IBM
+
+Tech
+24
+What does "SSL" stand for?
+Simple Security Layer
+Secure Sockets Layer
+System Security Layer
+Secure Sockets Layer
+
+Tech
+25
+Which company developed the first commercially successful microcomputer?
+Altair
+Apple
+IBM
+Altair
+
+Tech
+26
+What does "RAM" stand for?
+Random Access Memory
+Read-Only Memory
+Real Access Memory
+Random Access Memory
+
+Tech
+27
+Who developed the Linux operating system?
+Linus Torvalds
+Steve Jobs
+Bill Gates
+Linus Torvalds
+
+Tech
+28
+Which company developed the first digital camera?
+Canon
+Kodak
+Nikon
+Kodak
+
+Geography
+1
+Which continent is the world's largest desert, the Sahara, located in?
+Asia
+Europe
+Africa
+Africa
+
+History
+1
+Who was the first president of the United States?
+George Washington
+Thomas Jefferson
+Abraham Lincoln
+George Washington
+
+Science
+1
+What type of matter is not composed of atoms?
+Plasma
+Liquid
+Gas
+Plasma
+
+Math
+1
+What is the square root of 144?
+10
+15
+12
+12
+
+Geography
+2
+Which ocean is the largest by surface area?
+Atlantic Ocean
+Indian Ocean
+Pacific Ocean
+Pacific Ocean
+
+History
+2
+Who was the first female Prime Minister of the United Kingdom?
+Margaret Thatcher
+Boris Johnson
+Theresa May
+Margaret Thatcher
+
+Science
+2
+What is the smallest unit of matter?
+Atom
+Molecule
+Proton
+Atom
+
+Math
+2
+What is the value of pi (π) to two decimal places?
+3.14
+2.72
+4.20
+3.14
+
+Geography
+3
+Which country is both the smallest country in the world and the city-state with the highest population density?
+Vatican City
+Monaco
+San Marino
+Vatican City
+
+History
+3
+Which war was fought from 1939 to 1945 and involved many countries around the world?
+World War I
+World War II
+Vietnam War
+World War II
+
+Science
+3
+Which particle is responsible for transmitting the electromagnetic force?
+Photon
+Neutron
+Electron
+Photon
+
+Math
+3
+What is the value of e (Euler's number) to two decimal places?
+2.72
+3.14
+4.20
+2.72
+
+Geography
+4
+What is the highest mountain in Africa?
+Mount Kilimanjaro
+Mount Everest
+Mount McKinley
+Mount Kilimanjaro
+
+History
+4
+Which ancient civilization built the pyramids in Egypt?
+Greeks
+Ancient Egyptians
+Romans
+Ancient Egyptians
+
+Science
+4
+What is the largest planet in our solar system?
+Saturn
+Jupiter
+Mars
+Jupiter
+
+Math
+4
+What is the value of the natural logarithm of 10 (ln(10)) to two decimal places?
+1.61
+2.30
+3.32
+2.30
+
+History
+5
+Who was the leader of Nazi Germany during World War II?
+Adolf Hitler
+Joseph Stalin
+Winston Churchill
+Adolf Hitler
+
+Science
+5
+What is the smallest planet in our solar system?
+Mercury
+Venus
+Mars
+Mercury
+
+Math
+5
+What is the value of the sine of 60 degrees to two decimal places?
+0.50
+0.87
+1.00
+0.87
+
+Tech
+29
+Which of these is not an OOP programming language?
+Java
+C++
+C
+C
+

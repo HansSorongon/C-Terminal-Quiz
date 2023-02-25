@@ -67,8 +67,27 @@ void delay(float seconds)
   while (clock() < start_time + ms);	// run a while loop for seconds seconds.
 }
 
+// scanf implementation that allows spaces to be input and prevents buffer
+// overflow, flushes input buffer before and after. max size is only 200
+void safe_scanf(char *buffer, size_t max) {
+
+  char format[10] = "%";
+  char num[4];
+
+
+  fflush(stdin);
+
+  sprintf(num, "%d", max - 1);
+  strcat(format, num);
+  strcat(format, "[^\n]");
+
+  scanf(format, buffer);
+  fflush(stdin);
+
+}
+
 // returns selected
-int display_options(string150_t prompt, string30_t options[], size_t num_options)
+int display_options(char prompt[], string30_t options[], size_t num_options)
 {
   int select = 0;
   int selected = 0;
@@ -79,6 +98,58 @@ int display_options(string150_t prompt, string30_t options[], size_t num_options
   {
     system("cls");
 
+    printf("\n  %s\n\n", prompt);
+
+    for (i = 0; i < num_options; i++)
+    {
+      printf("\t  %c - %s\n", (select == i) ? '>' : ' ', options[i]);
+    }
+
+    printf("\n\t-----------------------\n\n");
+    printf("\n[k] up");
+    printf("\n[j] down");
+    printf("\n[d] select\n\n");
+
+    switch (getch())
+    {
+      case 'j':
+      case 'J':
+        if (select < num_options - 1)
+        {
+          select++;
+        }
+
+        break;
+      case 'k':
+      case 'K':
+        if (select > 0)
+        {
+          select--;
+        }
+
+        break;
+      case 'd':
+      case 'D':
+        selected = 1;
+        break;
+    }
+  }
+
+  return select;
+}
+
+// an abstraction of display_choices but takes in score as well
+int display_options_score(char prompt[], string30_t options[], size_t num_options, int score) {
+  int select = 0;
+  int selected = 0;
+  int i;
+
+ 	// clear loop
+  while (!selected)
+  {
+    system("cls");
+
+    printf("  Score: %d\n", score);
     printf("\n  %s\n\n", prompt);
 
     for (i = 0; i < num_options; i++)
@@ -299,7 +370,7 @@ void edit_record(file_t *file_props)
           {
             case 1:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].topic);
+              safe_scanf(file_props->questions[i].topic, 30);
               break;
             case 2:
               printf("\nPlease enter the new entry: ");
@@ -802,19 +873,6 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
     }
   }
 
- 	// display values of map we just created FOR DEBUGGING
-  /*for (i = 0; i < topic_list.topic_count; i++) { */
-  /*  printf("KEY: %s\n", topic_map[i].key); */
-  /*  printf("VALUE: %d\n\n", topic_map[i].length); */
-  /*  for (j = 0; j < topic_map[i].length; j++) { */
-  /*    printf("%d ", topic_map[i].indices[j]); */
-  /*   } */
-  /*  printf("]\n\n"); */
-  /*} */
-
- 	// select a random index from the list of indices we have under the same
- 	// topic and then display that
-
   system("cls");
   printf("\n  What is your name?");
   printf("\n  - ");
@@ -827,7 +885,7 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   	// not game over or not
 
     system("cls");
-    select = display_options("Please select a topic.", topic_list.topics, topic_list.topic_count + 1);
+    select = display_options_score("Please select a topic.", topic_list.topics, topic_list.topic_count + 1, score);
 
     if (select == topic_list.topic_count)
     {
@@ -848,14 +906,14 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
 
       system("cls");
 
-      printf("\n Score: %u", score);
 
      	// current questions into a list
       strcpy(current_choices[0], file_props.questions[random_index].choice1);
       strcpy(current_choices[1], file_props.questions[random_index].choice2);
       strcpy(current_choices[2], file_props.questions[random_index].choice3);
 
-      choice = display_options(file_props.questions[random_index].question, current_choices, 3);	// display the choices
+
+      choice = display_options_score(file_props.questions[random_index].question, current_choices, 3, score);	// display the choices
 
       switch (choice)
       {
@@ -907,7 +965,6 @@ void view_scores(file_t file_props, FILE *fptr)
   }
 
   // SORT
-
   int i, j, min_idx;
   struct player temp;
 
