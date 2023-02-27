@@ -68,20 +68,11 @@ void delay(float seconds)
 }
 
 // scanf implementation that allows spaces to be input and prevents buffer
-// overflow, flushes input buffer before and after. max size is only 200
-void safe_scanf(char *buffer, size_t max) {
-
-  char format[10] = "%";
-  char num[4];
-
+// overflow, flushes input buffer before and after.
+void safe_scan(char *buffer, size_t max) {
 
   fflush(stdin);
-
-  sprintf(num, "%d", max - 1);
-  strcat(format, num);
-  strcat(format, "[^\n]");
-
-  scanf(format, buffer);
+  fgets(buffer, max - 1, stdin);
   fflush(stdin);
 
 }
@@ -370,7 +361,7 @@ void edit_record(file_t *file_props)
           {
             case 1:
               printf("\nPlease enter the new entry: ");
-              safe_scanf(file_props->questions[i].topic, 30);
+              safe_scan(file_props->questions[i].topic, 30);
               break;
             case 2:
               printf("\nPlease enter the new entry: ");
