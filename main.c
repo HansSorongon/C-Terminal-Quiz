@@ -25,11 +25,11 @@ void play();
 void play_menu();
 void display_menu();
 
-typedef char string30_t[30];
-typedef char string150_t[150];
+typedef char string30_t[31];
+typedef char string150_t[151];
 
 // main structure for questions
-typedef struct
+struct Question
 {
   string30_t topic;
   int q_number;
@@ -38,27 +38,27 @@ typedef struct
   string30_t choice2;
   string30_t choice3;
   string30_t answer;
-}
+};
 
-question_t;
+typedef struct Question question_t;
 
-typedef struct
+struct Topics
 {
   string30_t topics[101];	// we'll store Back in the same list
   size_t topic_count;
-}
+};
 
-topics_t;
+typedef struct Topics topics_t;
 
 // struct for file properties, list of questions, size, and file name.
-typedef struct
+struct File
 {
   question_t questions[100];
   size_t size;
   string30_t file_name;
-}
+};
 
-file_t;
+typedef struct File file_t;
 
 void delay(float seconds)
 {
@@ -71,8 +71,19 @@ void delay(float seconds)
 // overflow, flushes input buffer before and after.
 void safe_scan(char *buffer, size_t max) {
 
-  fflush(stdin);
-  fgets(buffer, max - 1, stdin);
+  fflush(stdin); // flush stdin before and after just to be sure
+
+  int i = 0;
+
+  scanf(" %c", buffer); // first ch deal with input buffer whitespace
+  i++;
+
+  for (i = 1; i < max && buffer[i-1] != '\n'; i++) {
+    scanf("%c", buffer + i);
+  }
+
+  buffer[i-1] = '\0';
+
   fflush(stdin);
 
 }
@@ -365,23 +376,23 @@ void edit_record(file_t *file_props)
               break;
             case 2:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].question);
+              safe_scan(file_props->questions[i].question, 150);
               break;
             case 3:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].choice1);
+              safe_scan(file_props->questions[i].choice1, 30);
               break;
             case 4:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].choice2);
+              safe_scan(file_props->questions[i].choice2, 30);
               break;
             case 5:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].choice3);
+              safe_scan(file_props->questions[i].choice3, 30);
               break;
             case 6:
               printf("\nPlease enter the new entry: ");
-              scanf(" %[^\n]", file_props->questions[i].answer);
+              safe_scan(file_props->questions[i].answer, 30);
               break;
           }
 
@@ -478,7 +489,7 @@ export (file_t *file_props)
     int i;
 
     printf("Please enter the file name: ");
-    scanf("%s", file_name);
+    safe_scan(file_name, 30);
 
     FILE *fptr = fopen(file_name, "w+");	// need file name
     char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
@@ -530,10 +541,10 @@ void add_cont(file_t *file_props)
 
   system("cls");
   printf("\n\n  Please type in the question to add: \n\n  - ");
-  scanf(" %[^\n]", new_question);
+  safe_scan(new_question, 150);
 
   printf("\n\n  Please type in the answer to add: \n\n  - ");
-  scanf(" %[^\n]", new_answer);
+  safe_scan(new_answer, 30);
 
   for (i = 0; i < file_props->size; i++)
   {
@@ -556,14 +567,14 @@ void add_cont(file_t *file_props)
     printf("Please enter the following:");
 
     printf("\n\n Topic: ");
-    scanf(" %[^\n]", new_topic);
+    safe_scan(new_topic, 30);
 
     printf("\n\n Choice 1: ");
-    scanf(" %[^\n]", new_choice1);
+    safe_scan(new_choice1, 30);
     printf("\n\n Choice 2: ");
-    scanf(" %[^\n]", new_choice2);
+    safe_scan(new_choice2, 30);
     printf("\n\n Choice 3: ");
-    scanf(" %[^\n]", new_choice3);
+    safe_scan(new_choice3, 30);
 
    	// find max q_number
     for (i = 0; i < file_props->size; i++)
@@ -577,7 +588,7 @@ void add_cont(file_t *file_props)
       }
     }
 
-    printf("\n Attempting to append record...\n");
+    printf("\n  Attempting to append record...\n");
     strcpy(file_props->questions[file_props->size].topic, new_topic);
     file_props->questions[file_props->size].q_number = max + 1;
     strcpy(file_props->questions[file_props->size].question, new_question);
