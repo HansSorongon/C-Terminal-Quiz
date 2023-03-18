@@ -17,7 +17,9 @@ A terminal based quiz game made with the C Programming Language. </br>
 -   Deleting questions.
 -   Editing questions.
 -   Ordered view of scores.
--   Data management system with masked password input.
+-   Data management system.
+-   Masked password input for data management system PW: admin123
+
 </br>
 
 ## Built with
@@ -40,6 +42,9 @@ Alternatively, compile manually.</br>
 ```
 gcc -Wall SorongonH.c helper.c -o QuizGame
 ```
+
+The program will be complied as "QuizGame.exe".
+
 </br>
 
 ## More Information

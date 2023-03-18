@@ -6,6 +6,15 @@
 
 #include "helper.h"
 
+/* safe_scan is a user defined implementation of scanf that allows for the
+  input of spaces. Also controls the buffer size to prevent from buffer
+  overflow. Flushes stdin before and after writing.
+  @param *buffer - the buffer to write to.
+  @param max - max characters to write.
+
+  @return void
+  Pre-condition: N/A
+*/
 void safe_scan(char *buffer, size_t max) {
 
   fflush(stdin); // flush stdin before and after just to be sure
@@ -25,7 +34,16 @@ void safe_scan(char *buffer, size_t max) {
 
 }
 
-// returns selected
+/* display_options displays current options based on parameters passed in. Also
+  handles the 'cursor-like' user input style. Clears the screen after every
+  navigation.
+  @param prompt[] - a string containing the prompt.
+  @param options[] - an array of strings containing the options.
+  @param num_options - the number of options.
+
+  @return select - the selected option.
+  Pre-condition: N/A
+*/
 int display_options(char prompt[], string30_t options[], size_t num_options)
 {
   int select = 0;
@@ -77,7 +95,17 @@ int display_options(char prompt[], string30_t options[], size_t num_options)
   return select;
 }
 
-// an abstraction of display_choices but takes in score as well
+/* display_options_score is a modified form iof display_options that allows for
+  the display of score after each input. This was made because display_options clears
+  the screen after every input erasing everything except for the elements it displays.
+  @param prompt[] - a string containing the prompt.
+  @param options[] - an array of strings containing the options.
+  @param num_options - the number of options.
+  @param score - the current score.
+
+  @return select - the selected option.
+  Pre-condition: N/A
+*/
 int display_options_score(char prompt[], string30_t options[], size_t num_options, int score) {
   int select = 0;
   int selected = 0;
@@ -129,6 +157,12 @@ int display_options_score(char prompt[], string30_t options[], size_t num_option
   return select;
 }
 
+/* delay pauses the program for a number of seconds.
+   @param seconds - the number of seconds to pause for.
+
+  Pre-condition: N/A
+*/
+
 void delay(float seconds)
 {
   float ms = 1000 * seconds;
@@ -136,7 +170,12 @@ void delay(float seconds)
   while (clock() < start_time + ms);	// run a while loop for seconds seconds.
 }
 
-// returns 1 if match, 0 if not match
+/* prompt_password prompts the user for password input. It also masks the
+   password with asterisks * as the user is inputting.
+
+   @return the status whether the input matches the hardcoded password "admin123"
+   Pre-condition: N/A
+*/
 int prompt_password()
 {
   string30_t inp = {};

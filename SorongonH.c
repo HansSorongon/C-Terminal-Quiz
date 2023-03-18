@@ -16,6 +16,12 @@ void play_menu(file_t file_props);
 
 // --------------------------------------- MANAGE DATA FNS ------------------------
 
+/* print_question prints the question in labelled and formatted form.
+  @param question - The question to be printed in question_t type.
+
+  @return void
+  Pre-condition: question is in proper format and type.
+*/
 void print_question(question_t question)
 {
   printf("\n-----------------------------");
@@ -30,7 +36,13 @@ void print_question(question_t question)
 
 }
 
-// prompt if not yet imported
+/* prompt_import asks the user if they want to import a file. It calls the
+ * appropriate functions depending on the user's input.
+  @param *file_props - The pointer to the file props containing the contents of the imported file.
+
+  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
+  Pre-condition: A file has not yet been imported.
+*/
 int prompt_import(file_t *file_props)
 {
   string30_t import_options[2] = { "Yes", "No" };
@@ -58,7 +70,16 @@ int prompt_import(file_t *file_props)
   return success;
 }
 
-// reformat this to return struct
+/* find_unique_topics finds all unique topics in a given list of questions and
+ * edits an array of topics under the type string30_t to reflect that.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param topics[100] - An array of unique topics. Set to 100 as the max number of unique topics is 100.
+  @param *topic_count - a pointer to an integer containing the topic count to be set after topics
+  are appended to the topics array.
+
+  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
+  Pre-condition: N/A
+*/
 void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topic_count)
 {
   int i, j;
@@ -88,9 +109,16 @@ void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topi
 
 }
 
+/* edit_record prompts the user to change a specific element about a record based on user input.
+  This function does not follow the same structure as add or delete with a _cont function as it is shorter.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
 void edit_record(file_t *file_props)
 {
-  if (file_props->size)
+  if (file_props->size) // if a file has been imported already
   {
     string30_t topics[100];	// 100 worst case scenario possible topics
    	// variable *sized array in switch case is
@@ -198,6 +226,13 @@ void edit_record(file_t *file_props)
   }
 }
 
+/* import_data takes a file name and deserializes the contents of the file into
+   a file_t struct the program can read. This struct will be present for most of the application.
+   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return i - the count of questions imported.
+  Pre-condition: N/A
+*/
 int import_data(file_t *file_props)
 {
   string30_t file_name;
@@ -264,8 +299,15 @@ int import_data(file_t *file_props)
   return i;	// size
 }
 
-void
-export (file_t *file_props)
+/* export takes the current file properties and serializes it into a text file
+   that can be used in future instances of the program. It asks the user for
+   the file name.
+   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
+void export (file_t *file_props)
 {
   if (file_props->size)
   {
@@ -309,6 +351,13 @@ export (file_t *file_props)
 
 }
 
+/* add_cont is a helper function and continues the process of adding a
+   question into the file properties currently being used in the program..
+   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: A file has been imported already..
+*/
 void add_cont(file_t *file_props)
 {
  	// variables to store new entries
@@ -392,6 +441,13 @@ void add_cont(file_t *file_props)
   system("cls");
 }
 
+/* add_record manages the first part of adding a record to the current file
+  properties. It checks if there is a file already imported and calls prompt_import if not.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
 void add_record(file_t *file_props)
 {
   if (file_props->size)
@@ -411,6 +467,13 @@ void add_record(file_t *file_props)
   }
 }
 
+/* delete_cont manages the second part of the process of deleting a record(question)
+  currently in the file properties being used.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: A file has been imported already.
+*/
 void delete_cont(file_t *file_props)
 {
   string30_t topics[100];	// 100 worst case scenario possible topics
@@ -512,6 +575,13 @@ void delete_cont(file_t *file_props)
   }
 }
 
+/* delete_record manages the first part of deleting a record in the current file
+  properties. It checks if there is a file already imported and calls prompt_import if not.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
 void delete_record(file_t *file_props)
 {
   if (file_props->size)
@@ -532,6 +602,14 @@ void delete_record(file_t *file_props)
   }
 }
 
+/* manage_data handles the menu for all the data management related processes.
+  It also prompts the user for admin credentials before allowing the user to
+  use any of the functions stored.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
 void manage_data(file_t *file_props)
 {
   static int logged_in = 0;
@@ -601,6 +679,17 @@ void manage_data(file_t *file_props)
 
 // ------------------------------END OF MANAGE DATA FUNCTIONS ---------------
 
+/* play handles all of the game logic as well as prompts the user for each
+  input needed in the game loop. For generating random questions, the play
+  function creates a map of indices under each specific topic before the game
+  loop to utilize O(1) array indexing instead of what would be O(n) searches
+  per iteration. This reduces the max number of game loops to 100.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param *fptr - A pointer to a file for editing. This will be used to edit the score.txt file.
+
+  @return void
+  Pre-condition: A file has already been imported (best case).
+*/
 void play(file_t file_props, FILE *fptr)	// play can just receive the value of file_props
 // since we're not editing it.
 {
@@ -615,10 +704,9 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   string30_t user_answer;
   int map_rand;
 
-  topics_t topic_list;	// this not only is the list of topics but the topics
- 	// but the size as well
+  topics_t topic_list;	// this not only is the list of topics but the topics but the size as well
 
- 	// topic_map has the same length as topic_count
+  // topic_map has the same length as topic_count
   struct map
   {
     string30_t key;
@@ -743,6 +831,17 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   display_menu(&file_props);
 }
 
+/* play handles all of the game logic as well as prompts the user for each
+  input needed in the game loop. For generating random questions, the play
+  function creates a map of indices under each specific topic before the game
+  loop to utilize O(1) array indexing instead of what would be O(n) searches
+  per iteration. This reduces the max number of game loops to 100.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param *fptr - A pointer to a file for editing. This will be used to edit the score.txt file.
+
+  @return void
+  Pre-condition: A file has already been imported (best case).
+*/
 void view_scores(file_t file_props, FILE *fptr)
 {
   struct player
@@ -799,6 +898,13 @@ void view_scores(file_t file_props, FILE *fptr)
   play_menu(file_props);
 }
 
+/* play_menu handles the menu welcoming the user to the main functionality of
+  the program, the quiz game.
+  @param file_props - the file properties are passed in by value.
+
+  @return void
+  Pre-condition: A file has already been imported (best case).
+*/
 void play_menu(file_t file_props)
 {
   enum
@@ -829,6 +935,13 @@ void play_menu(file_t file_props)
   }
 }
 
+/* display_menu displays the main menu where the user select between play,
+  manage data, and exit.
+  @param file_props - the file properties are passed in by value.
+
+  @return void
+  Pre-condition: N/A
+*/
 void display_menu(file_t *file_props)
 {
   enum
@@ -856,6 +969,7 @@ void display_menu(file_t *file_props)
   }
 }
 
+// Entry Point
 int main(int argc, char **argv)
 {
  	// *questions always comes with *size
