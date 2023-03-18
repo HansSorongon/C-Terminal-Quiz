@@ -3,6 +3,13 @@
 A terminal based quiz game made with the C Programming Language. </br>
 &nbsp;
 
+<div align='center'>
+  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot1.jpeg" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot2.jpeg" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot3.jpeg" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot4.jpeg" style='height: 200px;'/>
+</div>
+
 ## Features
 
 -   Importing a quiz file with varying topics in text format.
@@ -24,11 +31,15 @@ a header file used in almost every part of the code can only be used with
 MS-DOS compilers. Equivalent functionality may be achieved through other header
 files and libraries in other operating systems. </br></br>
 
-Clone the repository and run the makefile with:
-- `make`
-Alternatively, compile manually.
-- `gcc -Wall main.c helper.c -o main`
-
+Clone the repository and run the makefile with:</br>
+```
+make
+```
+Alternatively, compile manually.</br>
+```
+gcc -Wall main.c helper.c -o main
+```
+</br>
 ## More Information
 
 This project was built solely using the C Programming Language for CCPROG2:
