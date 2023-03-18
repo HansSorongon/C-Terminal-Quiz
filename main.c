@@ -715,7 +715,6 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
       {
         printf(("Correct! +10\n"));
         score += 10;
-        printf("%d", select);
 
         // remove the index from the list of indices under topic
         for (int i = map_rand; i < topic_map[select].length; i++) {
