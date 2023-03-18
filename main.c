@@ -4,233 +4,17 @@
 #include <string.h>
 #include <time.h>
 
+#include "helper.h"
+
 // try adding typedefs for each string
 
-// function list
-void delay(float);
-int display_options();
-int prompt_password();
-void print_question();
-int prompt_import();
-void find_unique_topics();
-void edit_record();
-int import_data();
-void export ();
-void add_cont();
-void add_record();
-void delete_cont();
-void delete_record();
-void manage_data();
-void play();
-void play_menu();
-void display_menu();
-
-typedef char string30_t[31];
-typedef char string150_t[151];
-
-// main structure for questions
-struct Question
-{
-  string30_t topic;
-  int q_number;
-  string150_t question;
-  string30_t choice1;
-  string30_t choice2;
-  string30_t choice3;
-  string30_t answer;
-};
-
-typedef struct Question question_t;
-
-struct Topics
-{
-  string30_t topics[101];	// we'll store Back in the same list
-  size_t topic_count;
-};
-
-typedef struct Topics topics_t;
-
-// struct for file properties, list of questions, size, and file name.
-struct File
-{
-  question_t questions[100];
-  size_t size;
-  string30_t file_name;
-};
-
-typedef struct File file_t;
-
-void delay(float seconds)
-{
-  float ms = 1000 * seconds;
-  clock_t start_time = clock();
-  while (clock() < start_time + ms);	// run a while loop for seconds seconds.
-}
-
-// scanf implementation that allows spaces to be input and prevents buffer
-// overflow, flushes input buffer before and after.
-void safe_scan(char *buffer, size_t max) {
-
-  fflush(stdin); // flush stdin before and after just to be sure
-
-  int i = 0;
-
-  scanf(" %c", buffer); // first ch deal with input buffer whitespace
-  i++;
-
-  for (i = 1; i < max && buffer[i-1] != '\n'; i++) {
-    scanf("%c", buffer + i);
-  }
-
-  buffer[i-1] = '\0';
-
-  fflush(stdin);
-
-}
-
-// returns selected
-int display_options(char prompt[], string30_t options[], size_t num_options)
-{
-  int select = 0;
-  int selected = 0;
-  int i;
-
- 	// clear loop
-  while (!selected)
-  {
-    system("cls");
-
-    printf("\n  %s\n\n", prompt);
-
-    for (i = 0; i < num_options; i++)
-    {
-      printf("\t  %c - %s\n", (select == i) ? '>' : ' ', options[i]);
-    }
-
-    printf("\n\t-----------------------\n\n");
-    printf("\n[k] up");
-    printf("\n[j] down");
-    printf("\n[d] select\n\n");
-
-    switch (getch())
-    {
-      case 'j':
-      case 'J':
-        if (select < num_options - 1)
-        {
-          select++;
-        }
-
-        break;
-      case 'k':
-      case 'K':
-        if (select > 0)
-        {
-          select--;
-        }
-
-        break;
-      case 'd':
-      case 'D':
-        selected = 1;
-        break;
-    }
-  }
-
-  return select;
-}
-
-// an abstraction of display_choices but takes in score as well
-int display_options_score(char prompt[], string30_t options[], size_t num_options, int score) {
-  int select = 0;
-  int selected = 0;
-  int i;
-
- 	// clear loop
-  while (!selected)
-  {
-    system("cls");
-
-    printf("  Score: %d\n", score);
-    printf("\n  %s\n\n", prompt);
-
-    for (i = 0; i < num_options; i++)
-    {
-      printf("\t  %c - %s\n", (select == i) ? '>' : ' ', options[i]);
-    }
-
-    printf("\n\t-----------------------\n\n");
-    printf("\n[k] up");
-    printf("\n[j] down");
-    printf("\n[d] select\n\n");
-
-    switch (getch())
-    {
-      case 'j':
-      case 'J':
-        if (select < num_options - 1)
-        {
-          select++;
-        }
-
-        break;
-      case 'k':
-      case 'K':
-        if (select > 0)
-        {
-          select--;
-        }
-
-        break;
-      case 'd':
-      case 'D':
-        selected = 1;
-        break;
-    }
-  }
-
-  return select;
-}
+// function prototypes for crucial helper functions
+void manage_data(file_t *file_props);
+int import_data(file_t *file_props);
+void display_menu(file_t *file_props);
+void play_menu(file_t file_props);
 
 // --------------------------------------- MANAGE DATA FNS ------------------------
-
-// returns 1 if match, 0 if not match
-int prompt_password()
-{
-  string30_t inp = {};
-
- 	// input stack
-  char ch;
-  string30_t password = "admin123";
-  int i;
-
-  system("cls");
-  printf("\n Password: ");
-  while (ch != 13)
-  {
-   	// while not enter
-    ch = getch();
-    system("cls");
-    printf("\n Password: ");
-
-    if (ch == 8 && strlen(inp) > 0)
-    {
-      inp[strlen(inp) - 1] = '\0';	// set last to null
-    }
-    else if (ch != 8 && ch != 13 && strlen(inp) < 30)
-    {
-     	// if not bspace or not enter
-      strncat(inp, &ch, 1);	// append current ch to end
-    }
-
-    for (i = 0; i < strlen(inp); i++)
-    {
-      printf("*");
-    }
-  }
-
-  return !abs(strcmp(inp, password));
-}
 
 void print_question(question_t question)
 {
@@ -434,7 +218,7 @@ int import_data(file_t *file_props)
   FILE * fptr;
 
   fptr = fopen(file_name, "r");
-  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";	// lmfao
+  char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";
 
   if (fptr != NULL)
   {
@@ -494,7 +278,7 @@ export (file_t *file_props)
     FILE *fptr = fopen(file_name, "w+");	// need file name
     char format[] = "%s\n%d\n%s\n%s\n%s\n%s\n%s\n\n";
 
-   	// export
+    // export
     for (i = 0; i < file_props->size; i++)
     {
       fprintf(fptr, format,
@@ -687,16 +471,14 @@ void delete_cont(file_t *file_props)
 
           for (j = i; j < file_props->size - 1; j++)
           {
-            file_props->questions[j] = file_props->questions[j + 1];	// shift
-           	// left
-           	// from i
+            file_props->questions[j] = file_props->questions[j + 1];	// shift left
           }
 
           (file_props->size) --;	// decrement size
 
           system("cls");
           printf("\n\n  Record deleted.");
-         	// decrement all here
+         	// decrement all question numbers here
           for (j = 0; j < file_props->size; j++)
           {
             if (!strcmp(topics[sel_topic], file_props->questions[j].topic))
@@ -792,7 +574,7 @@ void manage_data(file_t *file_props)
        	// returns something
         break;
       case EXPORT:
-        export (file_props);
+        export(file_props);
         break;
       case BACK:
         logged_in = 0;	// log out
@@ -811,7 +593,7 @@ void manage_data(file_t *file_props)
 
         break;
       case 1:
-        display_menu();
+        display_menu(file_props);
         break;
     }
   }
@@ -831,6 +613,7 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   int random_index;
   char choice;
   string30_t user_answer;
+  int map_rand;
 
   topics_t topic_list;	// this not only is the list of topics but the topics
  	// but the size as well
@@ -841,15 +624,12 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
     string30_t key;
     int length;
     int indices[100];	// 100 possible indices worst case
-  }
+  } topic_map[100];	// 100 worst case unique topics
 
-  topic_map[100];	// 100 worst case unique topics
- 	//
+      // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
 
- 	// THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
-
- 	// we put back in the list of topics so it can appear in the same select
- 	// screen.
+      // we put back in the list of topics so it can appear in the same select
+      // screen.
 
   find_unique_topics(&file_props, topic_list.topics, &topic_list.topic_count);
   strcpy(topic_list.topics[topic_list.topic_count], "Back");	// at very last index
@@ -889,9 +669,8 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
     system("cls");
     select = display_options_score("Please select a topic.", topic_list.topics, topic_list.topic_count + 1, score);
 
-    if (select == topic_list.topic_count)
+    if (select == topic_list.topic_count) // if back was selected
     {
-    	// if back was selected
       printf("\n\n Thank you for playing!");
       printf("\n Your final score is %d.", score);
 
@@ -904,12 +683,13 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
     }
     else
     {
-      random_index = topic_map[select].indices[rand() % topic_map[select].length];
+      map_rand = rand() % topic_map[select].length;
+      random_index = topic_map[select].indices[map_rand];
 
       system("cls");
 
 
-     	// current questions into a list
+     	// current choices into a list
       strcpy(current_choices[0], file_props.questions[random_index].choice1);
       strcpy(current_choices[1], file_props.questions[random_index].choice2);
       strcpy(current_choices[2], file_props.questions[random_index].choice3);
@@ -930,10 +710,26 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
           break;
       }
 
-      if (!strcmp(user_answer, file_props.questions[random_index].answer))
+      if (!strcmp(user_answer, file_props.questions[random_index].answer)) // IF
+                                                                           // CORRECT
       {
+        printf(("Correct! +10\n"));
         score += 10;
-        printf("\n Correct! + 10!");
+
+        // remove the index from the list of indices under topic
+        for (int i = map_rand; i < topic_map[select].length; i++) {
+          topic_map[select].indices[i] = topic_map[select].indices[i + 1];
+        }
+        topic_map[select].length--;
+
+        // if no questions left under this topic, remove it
+        if (topic_map[select].length == 0) {
+          for (int i = select; i <= topic_list.topic_count; i++) {
+            strcpy(topic_list.topics[i], topic_list.topics[i + 1]);
+          }
+          topic_list.topic_count--;
+        }
+
         delay(0.5);
       }
       else
@@ -1022,7 +818,6 @@ void play_menu(file_t file_props)
   switch (select)
   {
     case PLAY:
-
       play(file_props, fptr);
       break;
     case VIEW:

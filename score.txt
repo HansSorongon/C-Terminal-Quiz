@@ -1,38 +1,30 @@
-Hans
-4400
+hans
+0
 
-Gabriel
-7200
-
-Rafael
-4
-
-Gamaliel
-4200
-
-Lars
-81000
-
-Dylan
-3300
-
-Julian
-7200
-Hans 2
-50
+hans
+0
 
 Hans
 40
 
-dsadsa
-30
+hans
+40
+
+dsadsads
+0
 
 hans
-190
+40
+
+hasn
+20
+
+asdklajsdlkj
+20
+
+asdklasdjkh
+40
 
 Hans
-10
-
-Hans
-10
+40
 

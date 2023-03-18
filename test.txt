@@ -314,9 +314,9 @@ Tech
 19
 John Atanasoff and Clifford Berry
 Charles Babbage
-Who invented the first electronic computer?
+Who invented the first electronAlan Turing
 Alan Turing
-John Atanasoff and Clifford Berry
+John Atanasoff and Clifford BerrTech
 
 Tech
 20
@@ -541,12 +541,4 @@ Mercury
 Venus
 Mars
 Mercury
-
-Math
-5
-What is the value of the sine of 60 degrees to two decimal places?
-0.50
-0.87
-1.00
-0.87
 
