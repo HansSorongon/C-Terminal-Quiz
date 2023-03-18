@@ -7,7 +7,6 @@ A terminal based quiz game made with the C Programming Language. </br>
   <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot1.png" style='height: 200px;'/>
   <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot2.png" style='height: 200px;'/>
   <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot3.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot4.png" style='height: 200px;'/>
 </div>
 
 ## Features
@@ -19,10 +18,12 @@ A terminal based quiz game made with the C Programming Language. </br>
 -   Editing questions.
 -   Ordered view of scores.
 -   Data management system with masked password input.
+</br>
 
 ## Built with
 
 -   C Programming Language
+</br>
 
 ## Installation
 
@@ -40,10 +41,11 @@ Alternatively, compile manually.</br>
 gcc -Wall main.c helper.c -o main
 ```
 </br>
+
 ## More Information
 
 This project was built solely using the C Programming Language for CCPROG2:
 Programming with structured data types.
 
-See the `LICENSE <https://github.com/HansSorongon/SorongonHansAaronG/blob/main/LICENSE.md>`_ for
+See the <a href="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/LICENSE.md">LICENSE</a> for
 information on terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
