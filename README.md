@@ -4,10 +4,10 @@ A terminal based quiz game made with the C Programming Language. </br>
 &nbsp;
 
 <div align='center'>
-  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot1.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot2.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot3.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/minimanga/blob/master/assets/screenshot4.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot1.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot2.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot3.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot4.png" style='height: 200px;'/>
 </div>
 
 ## Features
