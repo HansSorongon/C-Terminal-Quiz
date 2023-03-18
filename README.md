@@ -38,7 +38,7 @@ make
 ```
 Alternatively, compile manually.</br>
 ```
-gcc -Wall main.c helper.c -o main
+gcc -Wall SorongonH.c helper.c -o QuizGame
 ```
 </br>
 
