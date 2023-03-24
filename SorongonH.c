@@ -969,15 +969,25 @@ void display_menu(file_t *file_props)
         selected = display_options(" You have not imported a file yet! Import one?", imp_options, 2);
 
         if (selected == 0) {
+
           if (prompt_password()) {
             file_props->size = import_data(file_props);
 
             if (file_props->size) {
               play_menu(*file_props);
+            } else {
+              display_menu(file_props);  // file does not exist
             }
+
+          } else {
+            printf("\n\n You entered the wrong password!\n\n");
+            printf(" Press any key to continue...\n");
+            getch();
+            display_menu(file_props);  // wrong password
           }
+
         } else {
-          display_menu(file_props);
+          display_menu(file_props); // user does not want to import
         }
 
       }
