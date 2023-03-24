@@ -43,7 +43,7 @@ Alternatively, compile manually.</br>
 gcc -Wall SorongonH.c helper.c -o QuizGame
 ```
 
-The program will be complied as "QuizGame.exe".
+The program will be compiled as "QuizGame.exe". 
 
 </br>
 
