@@ -88,7 +88,7 @@ void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topi
 
   for (i = 0; i < file_props->size; i++)
   {
-  	in = 0;
+    in = 0;
     for (j = 0; j < i; j++)
     {
       if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
@@ -952,13 +952,36 @@ void display_menu(file_t *file_props)
   };
 
   string30_t menu_options[3] = { "Play", "Manage Data", "Exit" };
+  string30_t imp_options[2] = { "Yes", "No" };
+
 
   int selected = display_options("\t----- QUIZ MASTER -----", menu_options, 3);
 
   switch (selected)
   {
     case PLAY:
-      play_menu(*file_props);	// dereference here instead of passing pointer
+
+      if (file_props->size) {
+        play_menu(*file_props);	// dereference here instead of passing pointer
+      } else {
+
+        // if not yet imported, prompt the user to import.
+        selected = display_options(" You have not imported a file yet! Import one?", imp_options, 2);
+
+        if (selected == 0) {
+          if (prompt_password()) {
+            file_props->size = import_data(file_props);
+
+            if (file_props->size) {
+              play_menu(*file_props);
+            }
+          }
+        } else {
+          display_menu(file_props);
+        }
+
+      }
+
      	// for safety
       break;
     case MANAGE:
