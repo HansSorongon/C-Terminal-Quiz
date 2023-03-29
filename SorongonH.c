@@ -33,7 +33,6 @@ void print_question(question_t question)
   printf("C. %s\n\n", question.choice3);
   printf("ANS: %s\n", question.answer);
   printf("\n-----------------------------");
-
 }
 
 /* prompt_import asks the user if they want to import a file. It calls the
@@ -109,43 +108,72 @@ void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topi
 
 }
 
-/* edit_record prompts the user to change a specific element about a record based on user input.
-  This function does not follow the same structure as add or delete with a _cont function as it is shorter.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+int is_in(string30_t arr[], size_t size, string30_t key) {
 
-  @return void
-  Pre-condition: N/A
-*/
-void edit_record(file_t *file_props)
-{
-  if (file_props->size) // if a file has been imported already
-  {
-    string30_t topics[100];	// 100 worst case scenario possible topics
-   	// variable *sized array in switch case is
-   	// forbidden
+  int ret = 0;
+
+  for (int i = 0; i < size; i++) {
+    if (!strcmp(key, arr[i])) {
+      ret = 1;
+      i = size; // break out of the loop for efficiency
+    }
+  }
+
+  return ret;
+}
+
+void order_list(file_t *file_props) {
+
+  string30_t done[100]; // to store the list of already ordered topics.
+  size_t size = 0; // to store the count of already ordered topics
+  int count = 1;
+
+  for (int i = 0; i < file_props->size; i++) {
+
+    if (!is_in(done, size, file_props->questions[i].topic)) { // not done
+
+      for (int j = i; j < file_props->size; j++) {
+
+        if (!strcmp(file_props->questions[j].topic,
+              file_props->questions[i].topic))
+        {
+          file_props->questions[j].q_number = count;
+          count++;
+        }
+      }
+
+      count = 1;
+      strcpy(done[size], file_props->questions[i].topic);
+      size++;
+    }
+
+  }
+
+}
+
+void edit_cont(file_t *file_props) {
+
     size_t topic_count = 0;
+    string30_t topics[100];
+
     int i;
-
-    int q_num;
-    int sel_topic;
     int select;
+    int sel_topic;
+    int q_num;
 
-    find_unique_topics(file_props, topics, &topic_count);	// create list of
-   	// unique topics
+    find_unique_topics(file_props, topics, &topic_count);
 
-    strcpy(topics[topic_count], "Back");	// append Back to topics array
+    strcpy(topics[topic_count], "Back"); // append back to the choices
 
     printf("\n");
-    sel_topic = display_options("Please choose a topic.", topics, topic_count + 1);
+    sel_topic = display_options("Please choose a topic.",
+        topics, topic_count + 1);
 
-   	// BACK
-    if (sel_topic == topic_count)
-    {
+    // if back
+    if (sel_topic == topic_count) {
       manage_data(file_props);
-    }
-    else
-    {
-     	// display all under that topic
+    } else {
+
       system("cls");
       for (i = 0; i < file_props->size; i++)
       {
@@ -208,22 +236,41 @@ void edit_record(file_t *file_props)
               break;
           }
 
-          edit_record(file_props);	// recursive
         }
       }
+      // finish
+      order_list(file_props);
+      edit_cont(file_props);
     }
+
+}
+
+/* edit_record prompts the user to change a specific element about a record based on user input.
+  This function does not follow the same structure as add or delete with a _cont function as it is shorter.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
+void edit_record(file_t *file_props) // REFACTOR THIS!!!!!!! CURRENTLY BROKEN
+{
+
+  if (file_props->size)
+  {
+    edit_cont(file_props);
   }
   else
   {
     if (prompt_import(file_props))
     {
-      edit_record(file_props);
+      edit_cont(file_props);
     }
     else
     {
       manage_data(file_props);
     }
   }
+
 }
 
 /* import_data takes a file name and deserializes the contents of the file into
