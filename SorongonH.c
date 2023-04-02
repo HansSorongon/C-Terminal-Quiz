@@ -69,45 +69,6 @@ int prompt_import(file_t *file_props)
   return success;
 }
 
-/* find_unique_topics finds all unique topics in a given list of questions and
- * edits an array of topics under the type string30_t to reflect that.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-  @param topics[100] - An array of unique topics. Set to 100 as the max number of unique topics is 100.
-  @param *topic_count - a pointer to an integer containing the topic count to be set after topics
-  are appended to the topics array.
-
-  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
-  Pre-condition: N/A
-*/
-void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topic_count)
-{
-  int i, j;
-  int in = 0;
-  int count = 0;
-
-  for (i = 0; i < file_props->size; i++)
-  {
-    in = 0;
-    for (j = 0; j < i; j++)
-    {
-      if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic))
-      {
-       	// if dupe
-        in = 1;
-      }
-    }
-
-    if (! in)
-    {
-      strcpy(topics[count], file_props->questions[i].topic);
-      count++;
-    }
-  }
-
-  *topic_count = count;
-
-}
-
 int is_in(string30_t arr[], size_t size, string30_t key) {
 
   int ret = 0;
@@ -121,6 +82,54 @@ int is_in(string30_t arr[], size_t size, string30_t key) {
 
   return ret;
 }
+
+/* find_unique_topics finds all unique topics in a given list of questions and
+ * edits an array of topics under the type string30_t to reflect that.
+  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param topics[100] - An array of unique topics. Set to 100 as the max number of unique topics is 100.
+  @param *topic_count - a pointer to an integer containing the topic count to be set after topics
+  are appended to the topics array.
+
+  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
+  Pre-condition: N/A
+*/
+void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topic_count)
+{
+  int i;
+  int count = 0;
+
+  for (i = 0; i < file_props->size; i++)
+  {
+    if (!is_in(topics, count, file_props->questions[i].topic))
+    {
+      strcpy(topics[count], file_props->questions[i].topic);
+      count++;
+    }
+  }
+
+  /* for (i = 0; i < file_props->size; i++) */
+  /* { */
+  /*   in = 0; */
+  /*   for (j = 0; j < i; j++) */
+  /*   { */
+  /*     if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) */
+  /*     { */
+  /*      	// if dupe */
+  /*       in = 1; */
+  /*     } */
+  /*   } */
+
+  /*   if (! in) */
+  /*   { */
+  /*     strcpy(topics[count], file_props->questions[i].topic); */
+  /*     count++; */
+  /*   } */
+  /* } */
+
+  *topic_count = count;
+
+}
+
 
 void order_list(file_t *file_props) {
 
@@ -151,7 +160,7 @@ void order_list(file_t *file_props) {
 
 }
 
-void edit_cont(file_t *file_props) {
+void edit_record(file_t *file_props) {
 
     size_t topic_count = 0;
     string30_t topics[100];
@@ -190,7 +199,8 @@ void edit_cont(file_t *file_props) {
       {
        	// NOTE: i here will be the index of the selected question
        	// if topic matches selected AND question number matches entered
-        if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number))
+        if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) &&
+            (q_num == file_props->questions[i].q_number))
         {
          	// file_props->questions[i] is the question
 
@@ -239,38 +249,28 @@ void edit_cont(file_t *file_props) {
         }
       }
       // finish
-      order_list(file_props);
-      edit_cont(file_props);
+      order_list(file_props); // order the list again
+      edit_record(file_props);
     }
 
 }
 
-/* edit_record prompts the user to change a specific element about a record based on user input.
-  This function does not follow the same structure as add or delete with a _cont function as it is shorter.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-
-  @return void
-  Pre-condition: N/A
-*/
-void edit_record(file_t *file_props) // REFACTOR THIS!!!!!!! CURRENTLY BROKEN
-{
-
+void check_import(file_t *file_props, void (*function)()) {
   if (file_props->size)
   {
-    edit_cont(file_props);
+    function(file_props);
   }
   else
   {
     if (prompt_import(file_props))
     {
-      edit_cont(file_props);
+      function(file_props);
     }
     else
     {
       manage_data(file_props);
     }
   }
-
 }
 
 /* import_data takes a file name and deserializes the contents of the file into
@@ -398,14 +398,15 @@ void export (file_t *file_props)
 
 }
 
-/* add_cont is a helper function and continues the process of adding a
+/* add_record is a function that does the of adding a
    question into the file properties currently being used in the program..
-   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+   @param *file_props - A pointer to the struct representing the properties of
+   the file including the questions.
 
   @return void
   Pre-condition: A file has been imported already..
 */
-void add_cont(file_t *file_props)
+void add_record(file_t *file_props)
 {
  	// variables to store new entries
   string150_t new_question;
@@ -440,7 +441,7 @@ void add_cont(file_t *file_props)
     }
   }
 
-  if (!listed)
+  if (!listed) // guard clause 8)
   {
     system("cls");
 
@@ -456,17 +457,6 @@ void add_cont(file_t *file_props)
     printf("\n\n Choice 3: ");
     safe_scan(new_choice3, 30);
 
-   	// find max q_number
-    for (i = 0; i < file_props->size; i++)
-    {
-      if (!strcmp(file_props->questions[i].topic, new_topic))
-      {
-        if (file_props->questions[i].q_number > max)
-        {
-          max = file_props->questions[i].q_number;
-        }
-      }
-    }
 
     printf("\n  Attempting to append record...\n");
     strcpy(file_props->questions[file_props->size].topic, new_topic);
@@ -478,6 +468,7 @@ void add_cont(file_t *file_props)
     strcpy(file_props->questions[file_props->size].answer, new_answer);
 
     file_props->size++;
+    order_list(file_props); // order the list again
 
     printf("\n  Successfully added record.");
     printf("\n\n  Press any key to continue...\n");
@@ -488,32 +479,6 @@ void add_cont(file_t *file_props)
   system("cls");
 }
 
-/* add_record manages the first part of adding a record to the current file
-  properties. It checks if there is a file already imported and calls prompt_import if not.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-
-  @return void
-  Pre-condition: N/A
-*/
-void add_record(file_t *file_props)
-{
-  if (file_props->size)
-  {
-    add_cont(file_props);
-  }
-  else
-  {
-    if (prompt_import(file_props))
-    {
-      add_cont(file_props);
-    }
-    else
-    {
-      manage_data(file_props);
-    }
-  }
-}
-
 /* delete_cont manages the second part of the process of deleting a record(question)
   currently in the file properties being used.
   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
@@ -521,7 +486,7 @@ void add_record(file_t *file_props)
   @return void
   Pre-condition: A file has been imported already.
 */
-void delete_cont(file_t *file_props)
+void delete_record(file_t *file_props)
 {
   string30_t topics[100];	// 100 worst case scenario possible topics
  	// variable *sized array in switch case is
@@ -584,28 +549,10 @@ void delete_cont(file_t *file_props)
             file_props->questions[j] = file_props->questions[j + 1];	// shift left
           }
 
-          (file_props->size) --;	// decrement size
+          file_props->size--;	// decrement size
 
           system("cls");
           printf("\n\n  Record deleted.");
-         	// decrement all question numbers here
-          for (j = 0; j < file_props->size; j++)
-          {
-            if (!strcmp(topics[sel_topic], file_props->questions[j].topic))
-            {
-             	// if same
-             	// topic as
-             	// deleted
-              if (file_props->questions[j].q_number > q_num)
-              {
-               	// if q_number is
-               	// greater than the
-               	// deleted it will
-               	// be shifted left
-                file_props->questions[j].q_number -= 1;
-              }
-            }
-          }
 
           printf("\n\n Press any key to continue...\n");
           getch();
@@ -618,33 +565,6 @@ void delete_cont(file_t *file_props)
           manage_data(file_props);
         }
       }
-    }
-  }
-}
-
-/* delete_record manages the first part of deleting a record in the current file
-  properties. It checks if there is a file already imported and calls prompt_import if not.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-
-  @return void
-  Pre-condition: N/A
-*/
-void delete_record(file_t *file_props)
-{
-  if (file_props->size)
-  {
-   	// if array already imported, size will be initialized.
-    delete_cont(file_props);
-  }
-  else
-  {
-    if (prompt_import(file_props))
-    {
-      delete_cont(file_props);
-    }
-    else
-    {
-      manage_data(file_props);
     }
   }
 }
@@ -685,13 +605,13 @@ void manage_data(file_t *file_props)
     switch (select)
     {
       case ADD:
-        add_record(file_props);
+        check_import(file_props, add_record);
         break;
       case EDIT:
-        edit_record(file_props);
+        check_import(file_props, edit_record);
         break;
       case DELETE:
-        delete_record(file_props);
+        check_import(file_props, delete_record);
         break;
       case IMPORT:
         file_props->size = import_data(file_props);	// if we import data, size gets init
@@ -1006,7 +926,7 @@ void display_menu(file_t *file_props)
 
   switch (selected)
   {
-    case PLAY:
+    case PLAY: // refactor this
 
       if (file_props->size) {
         play_menu(*file_props);	// dereference here instead of passing pointer
@@ -1045,6 +965,7 @@ void display_menu(file_t *file_props)
       manage_data(file_props);
       break;
     case EXIT:
+      printf("\nThank you for playing!\n\n");
       break;
   }
 }
@@ -1052,15 +973,18 @@ void display_menu(file_t *file_props)
 // Entry Point
 int main(int argc, char **argv)
 {
- 	// *questions always comes with *size
- 	//
-  srand((unsigned) time(NULL));
 
-  file_t file_props;	// def struct for file holding questions, size, and file
+  printf("\x1B[?25l");
+
+  srand((unsigned) time(NULL)); // seed rand
+
+  file_t file_props;    // def struct for file holding questions, size, and file
  	// name
   file_props.size = 0;	// init size as 0
 
   display_menu(&file_props);
+
+  printf("\x1B[?25h");
 
   return 0;
 }
