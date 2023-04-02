@@ -4,9 +4,9 @@ A terminal based quiz game made with the C Programming Language. </br>
 &nbsp;
 
 <div align='center'>
-  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot1.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot2.png" style='height: 200px;'/>
-  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshot3.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshots/screenshot1.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshots/screenshot2.png" style='height: 200px;'/>
+  <img src="https://github.com/HansSorongon/SorongonHansAaronG/blob/main/screenshots/screenshot3.png" style='height: 200px;'/>
 </div>
 
 ## Features
