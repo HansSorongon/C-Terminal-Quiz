@@ -38,12 +38,13 @@ Clone the repository and run the makefile with:</br>
 ```
 make
 ```
+
 Alternatively, compile manually.</br>
 ```
 gcc -Wall SorongonH.c helper.c -o QuizGame
 ```
 
-The program will be compiled as "QuizGame.exe". 
+The program will be compiled as "QuizGame.exe".
 
 </br>
 
