@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 #include "helper.h"
+
+#define MAX 100
 
 // try adding typedefs for each string
 
@@ -14,7 +15,7 @@ int import_data(file_t *file_props);
 void display_menu(file_t *file_props);
 void play_menu(file_t file_props);
 
-// --------------------------------------- MANAGE DATA FNS ------------------------
+/* ------------------------ MANAGE DATA FNS ------------------------ */
 
 /* print_question prints the question in labelled and formatted form.
   @param question - The question to be printed in question_t type.
@@ -37,18 +38,21 @@ void print_question(question_t question)
 
 /* prompt_import asks the user if they want to import a file. It calls the
  * appropriate functions depending on the user's input.
-  @param *file_props - The pointer to the file props containing the contents of the imported file.
+  @param *file_props - The pointer to the file props containing the contents
+  of the imported file.
 
-  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
+  @return success - 1 or 0 respectively depending on whether or not the
+  operation was successful.
   Pre-condition: A file has not yet been imported.
 */
 int prompt_import(file_t *file_props)
 {
   string30_t import_options[2] = { "Yes", "No" };
 
-  int select = display_options("You have not imported a file! Import one?", import_options, 2);
-  int init_size = 0;
+  int select = display_options("You have not imported a file! Import one?",
+      import_options, 2);
 
+  int init_size = 0;
   int success = 0;
 
   switch (select)
@@ -85,15 +89,20 @@ int is_in(string30_t arr[], size_t size, string30_t key) {
 
 /* find_unique_topics finds all unique topics in a given list of questions and
  * edits an array of topics under the type string30_t to reflect that.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-  @param topics[100] - An array of unique topics. Set to 100 as the max number of unique topics is 100.
-  @param *topic_count - a pointer to an integer containing the topic count to be set after topics
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
+  @param topics[MAX] - An array of unique topics. Set to MAX as the max
+  possible unique topics will be equal to MAX.
+  @param *topic_count - a pointer to an integer containing the topic count to
+  be set after topics
   are appended to the topics array.
 
-  @return success - 1 or 0 respectively depending on whether or not the operation was successful.
+  @return success - 1 or 0 respectively depending on whether or not the
+  operation was successful.
   Pre-condition: N/A
 */
-void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topic_count)
+void find_unique_topics(file_t *file_props, string30_t topics[MAX], size_t
+                        *topic_count)
 {
   int i;
   int count = 0;
@@ -107,44 +116,35 @@ void find_unique_topics(file_t *file_props, string30_t topics[100], size_t *topi
     }
   }
 
-  /* for (i = 0; i < file_props->size; i++) */
-  /* { */
-  /*   in = 0; */
-  /*   for (j = 0; j < i; j++) */
-  /*   { */
-  /*     if (!strcmp(file_props->questions[i].topic, file_props->questions[j].topic)) */
-  /*     { */
-  /*      	// if dupe */
-  /*       in = 1; */
-  /*     } */
-  /*   } */
-
-  /*   if (! in) */
-  /*   { */
-  /*     strcpy(topics[count], file_props->questions[i].topic); */
-  /*     count++; */
-  /*   } */
-  /* } */
-
   *topic_count = count;
-
 }
 
+/* order_list takes the current properties of the imported file and orders
+  them according to question number relative to the topic.
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
 
-void order_list(file_t *file_props) {
+  @return void
+  Pre-condition: N/A
+*/
+void order_list(file_t *file_props)
+{
 
-  string30_t done[100]; // to store the list of already ordered topics.
+  string30_t done[MAX]; // to store the list of already ordered topics.
   size_t size = 0; // to store the count of already ordered topics
-  int count = 1;
+  int count = 1, i, j;
 
-  for (int i = 0; i < file_props->size; i++) {
+  for (i = 0; i < file_props->size; i++)
+  {
 
-    if (!is_in(done, size, file_props->questions[i].topic)) { // not done
+    if (!is_in(done, size, file_props->questions[i].topic)) // not done
+    {
 
-      for (int j = i; j < file_props->size; j++) {
+      for (j = i; j < file_props->size; j++)
+      {
 
         if (!strcmp(file_props->questions[j].topic,
-              file_props->questions[i].topic))
+                    file_props->questions[i].topic))
         {
           file_props->questions[j].q_number = count;
           count++;
@@ -160,10 +160,20 @@ void order_list(file_t *file_props) {
 
 }
 
+/* edit_record takes the current properties of the imported file and prompts
+ the user to select a question from a specific topic to edit. The function
+ also orders the list after the edit is made to ensure that all questions are
+ ordered correctly after topic is changed.
+ @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
+
+  @return void
+  Pre-condition: N/A
+*/
 void edit_record(file_t *file_props) {
 
     size_t topic_count = 0;
-    string30_t topics[100];
+    string30_t topics[MAX];
 
     int i;
     int select;
@@ -218,44 +228,52 @@ void edit_record(file_t *file_props) {
           select = getch();
           printf("You selected: %d", select - 48);
 
+          printf("\nPlease enter the new entry: ");
+
           switch (select - 48)
           {
             case 1:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].topic, 30);
               break;
             case 2:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].question, 150);
               break;
             case 3:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].choice1, 30);
               break;
             case 4:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].choice2, 30);
               break;
             case 5:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].choice3, 30);
               break;
             case 6:
-              printf("\nPlease enter the new entry: ");
               safe_scan(file_props->questions[i].answer, 30);
               break;
           }
-
         }
       }
       // finish
       order_list(file_props); // order the list again
       edit_record(file_props);
     }
-
 }
 
-void check_import(file_t *file_props, void (*function)()) {
+/* check_import prompts the user to import a file if there isn't one detected
+  in the file properties. It then calls the corresponding function through the
+  dereferenced function pointer in the arguments.
+
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
+  @param *function() - A dereferenced pointer to the passed in function. Used
+  to call the specific function to be executed after import.
+
+  @return i - the count of questions imported.
+  Pre-condition: N/A
+*/
+void check_import(file_t *file_props, void (*function)())
+{
+
   if (file_props->size)
   {
     function(file_props);
@@ -271,11 +289,14 @@ void check_import(file_t *file_props, void (*function)()) {
       manage_data(file_props);
     }
   }
+
 }
 
 /* import_data takes a file name and deserializes the contents of the file into
-   a file_t struct the program can read. This struct will be present for most of the application.
-   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+   a file_t struct the program can read. This struct will be present for most
+   of the application.
+   @param *file_props - A pointer to the struct representing the properties of
+   the file including the questions.
 
   @return i - the count of questions imported.
   Pre-condition: N/A
@@ -327,7 +348,8 @@ int import_data(file_t *file_props)
   {
     string30_t confirm_options[2] = { "Yes", "No" };
 
-    confirm = display_options("Would you like to display the contents?", confirm_options, 2);
+    confirm = display_options("Would you like to display the contents?",
+        confirm_options, 2);
 
     if (!confirm)
     {
@@ -349,7 +371,8 @@ int import_data(file_t *file_props)
 /* export takes the current file properties and serializes it into a text file
    that can be used in future instances of the program. It asks the user for
    the file name.
-   @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+   @param *file_props - A pointer to the struct representing the properties of
+   the file including the questions.
 
   @return void
   Pre-condition: N/A
@@ -479,16 +502,18 @@ void add_record(file_t *file_props)
   system("cls");
 }
 
-/* delete_cont manages the second part of the process of deleting a record(question)
+/* delete_cont manages the second part of the process of deleting a
+  record(question)
   currently in the file properties being used.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
 
   @return void
   Pre-condition: A file has been imported already.
 */
 void delete_record(file_t *file_props)
 {
-  string30_t topics[100];	// 100 worst case scenario possible topics
+  string30_t topics[MAX];	// MAX worst case scenario possible topics
  	// variable *sized array in switch case is
  	// forbidden
   size_t topic_count = 0;
@@ -525,7 +550,8 @@ void delete_record(file_t *file_props)
    	// NOTE: i here will be the index of the selected question
 
    	// if topic matches selected AND question number matches entered
-    if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) && (q_num == file_props->questions[i].q_number))
+    if ((!strcmp(topics[sel_topic], file_props->questions[i].topic)) &&
+        (q_num == file_props->questions[i].q_number))
     {
       system("cls");
       printf("You selected question %d.\n", file_props->questions[i].q_number);
@@ -546,7 +572,7 @@ void delete_record(file_t *file_props)
 
           for (j = i; j < file_props->size - 1; j++)
           {
-            file_props->questions[j] = file_props->questions[j + 1];	// shift left
+            file_props->questions[j] = file_props->questions[j + 1]; // shift left
           }
 
           file_props->size--;	// decrement size
@@ -572,7 +598,8 @@ void delete_record(file_t *file_props)
 /* manage_data handles the menu for all the data management related processes.
   It also prompts the user for admin credentials before allowing the user to
   use any of the functions stored.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
 
   @return void
   Pre-condition: N/A
@@ -580,7 +607,12 @@ void delete_record(file_t *file_props)
 void manage_data(file_t *file_props)
 {
   static int logged_in = 0;
-  string30_t manage_options[6] = { "Add", "Edit", "Delete", "Import", "Export", "Back" };
+  string30_t manage_options[6] = { "Add",
+                                   "Edit",
+                                   "Delete",
+                                   "Import",
+                                   "Export",
+                                   "Back" };
 
   string30_t try_options[2] = { "Try Again", "Back" };
 
@@ -600,7 +632,8 @@ void manage_data(file_t *file_props)
 
   if (logged_in)
   {
-    select = display_options("Welcome admin, what would you like to do?", manage_options, 6);
+    select = display_options("Welcome admin, what would you like to do?",
+        manage_options, 6);
 
     switch (select)
     {
@@ -614,8 +647,8 @@ void manage_data(file_t *file_props)
         check_import(file_props, delete_record);
         break;
       case IMPORT:
-        file_props->size = import_data(file_props);	// if we import data, size gets init
-        manage_data(file_props);	// have to call again here because import
+        file_props->size = import_data(file_props); // size gets init
+        manage_data(file_props); // have to call again here because import
        	// returns something
         break;
       case EXPORT:
@@ -629,7 +662,8 @@ void manage_data(file_t *file_props)
   }
   else
   {
-    select = display_options("You entered the wrong password!", try_options, 2);
+    select = display_options("You entered the wrong password!",
+                             try_options, 2);
 
     switch (select)
     {
@@ -650,14 +684,16 @@ void manage_data(file_t *file_props)
   input needed in the game loop. For generating random questions, the play
   function creates a map of indices under each specific topic before the game
   loop to utilize O(1) array indexing instead of what would be O(n) searches
-  per iteration. This reduces the max number of game loops to 100.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-  @param *fptr - A pointer to a file for editing. This will be used to edit the score.txt file.
+  per iteration. This reduces the max number of game loops to MAX.
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
+  @param *fptr - A pointer to a file for editing. This will be used to edit
+  the score.txt file.
 
   @return void
   Pre-condition: A file has already been imported (best case).
 */
-void play(file_t file_props, FILE *fptr)	// play can just receive the value of file_props
+void play(file_t file_props, FILE *fptr) // play can just receive the value of file_props
 // since we're not editing it.
 {
   string30_t name;
@@ -671,15 +707,16 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   string30_t user_answer;
   int map_rand;
 
-  topics_t topic_list;	// this not only is the list of topics but the topics but the size as well
+  topics_t topic_list;	// this not only is the list of topics but the topics
+                        // but the size as well
 
   // topic_map has the same length as topic_count
   struct map
   {
     string30_t key;
     int length;
-    int indices[100];	// 100 possible indices worst case
-  } topic_map[100];	// 100 worst case unique topics
+    int indices[MAX];	// MAX possible indices worst case
+  } topic_map[MAX];	// MAX worst case unique topics
 
       // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
 
@@ -687,7 +724,7 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
       // screen.
 
   find_unique_topics(&file_props, topic_list.topics, &topic_list.topic_count);
-  strcpy(topic_list.topics[topic_list.topic_count], "Back");	// at very last index
+  strcpy(topic_list.topics[topic_list.topic_count], "Back"); // at last index
 
   for (i = 0; i < topic_list.topic_count; i++)
   {
@@ -722,7 +759,8 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   	// not game over or not
 
     system("cls");
-    select = display_options_score("Please select a topic.", topic_list.topics, topic_list.topic_count + 1, score);
+    select = display_options_score("Please select a topic.", topic_list.topics,
+                                    topic_list.topic_count + 1, score);
 
     if (select == topic_list.topic_count) // if back was selected
     {
@@ -750,7 +788,8 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
       strcpy(current_choices[2], file_props.questions[random_index].choice3);
 
 
-      choice = display_options_score(file_props.questions[random_index].question, current_choices, 3, score);	// display the choices
+      choice = display_options_score(file_props.questions[random_index].question,
+                                     current_choices, 3, score);
 
       switch (choice)
       {
@@ -765,21 +804,20 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
           break;
       }
 
-      if (!strcmp(user_answer, file_props.questions[random_index].answer)) // IF
-                                                                           // CORRECT
+      if (!strcmp(user_answer, file_props.questions[random_index].answer))
       {
         printf(("Correct! +10\n"));
         score += 10;
 
         // remove the index from the list of indices under topic
-        for (int i = map_rand; i < topic_map[select].length; i++) {
+        for (i = map_rand; i < topic_map[select].length; i++) {
           topic_map[select].indices[i] = topic_map[select].indices[i + 1];
         }
         topic_map[select].length--;
 
         // if no questions left under this topic, remove it
         if (topic_map[select].length == 0) {
-          for (int i = select; i <= topic_list.topic_count; i++) {
+          for (i = select; i <= topic_list.topic_count; i++) {
             strcpy(topic_list.topics[i], topic_list.topics[i + 1]);
           }
           topic_list.topic_count--;
@@ -802,9 +840,11 @@ void play(file_t file_props, FILE *fptr)	// play can just receive the value of f
   input needed in the game loop. For generating random questions, the play
   function creates a map of indices under each specific topic before the game
   loop to utilize O(1) array indexing instead of what would be O(n) searches
-  per iteration. This reduces the max number of game loops to 100.
-  @param *file_props - A pointer to the struct representing the properties of the file including the questions.
-  @param *fptr - A pointer to a file for editing. This will be used to edit the score.txt file.
+  per iteration. This reduces the max number of game loops to MAX.
+  @param *file_props - A pointer to the struct representing the properties of
+  the file including the questions.
+  @param *fptr - A pointer to a file for editing. This will be used to edit
+  the score.txt file.
 
   @return void
   Pre-condition: A file has already been imported (best case).
@@ -817,7 +857,7 @@ void view_scores(file_t file_props, FILE *fptr)
     int score;
   }
 
-  players[100];
+  players[MAX];
 
   size_t count = 0;
   char format[12] = "%[^\n]\n%d\n";
@@ -886,7 +926,8 @@ void play_menu(file_t file_props)
   FILE * fptr;
   fptr = fopen("score.txt", "a+");
 
-  int select = display_options("Welcome challenger, are you ready?", play_options, 3);
+  int select = display_options("Welcome challenger, are you ready?",
+                                play_options, 3);
 
   switch (select)
   {
@@ -933,7 +974,8 @@ void display_menu(file_t *file_props)
       } else {
 
         // if not yet imported, prompt the user to import.
-        selected = display_options(" You have not imported a file yet! Import one?", imp_options, 2);
+        selected = display_options(" You have not imported a file yet!"
+                                   " Import one?", imp_options, 2);
 
         if (selected == 0) {
 
@@ -974,17 +1016,12 @@ void display_menu(file_t *file_props)
 int main(int argc, char **argv)
 {
 
-  printf("\x1B[?25l");
-
   srand((unsigned) time(NULL)); // seed rand
 
-  file_t file_props;    // def struct for file holding questions, size, and file
- 	// name
+  file_t file_props;    // def struct for file holding questions, size, fname
   file_props.size = 0;	// init size as 0
 
   display_menu(&file_props);
-
-  printf("\x1B[?25h");
 
   return 0;
 }
