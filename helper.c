@@ -15,7 +15,8 @@
   @return void
   Pre-condition: N/A
 */
-void safe_scan(char *buffer, size_t max) {
+void safe_scan(char *buffer, size_t max)
+{
 
   fflush(stdin); // flush stdin before and after just to be sure
 
@@ -24,7 +25,8 @@ void safe_scan(char *buffer, size_t max) {
   scanf(" %c", buffer); // first ch deal with input buffer whitespace
   i++;
 
-  for (i = 1; i < max && buffer[i-1] != '\n'; i++) {
+  for (i = 1; i < max && buffer[i-1] != '\n'; i++)
+  {
     scanf("%c", buffer + i);
   }
 
@@ -106,7 +108,9 @@ int display_options(char prompt[], string30_t options[], size_t num_options)
   @return select - the selected option.
   Pre-condition: N/A
 */
-int display_options_score(char prompt[], string30_t options[], size_t num_options, int score) {
+int display_options_score(char prompt[], string30_t options[],
+                          size_t num_options, int score)
+{
   int select = 0;
   int selected = 0;
   int i;

@@ -693,7 +693,8 @@ void manage_data(file_t *file_props)
   @return void
   Pre-condition: A file has already been imported (best case).
 */
-void play(file_t file_props, FILE *fptr) // play can just receive the value of file_props
+void play(file_t file_props, FILE *fptr) // play can just receive the value of
+                                         // file_props
 // since we're not editing it.
 {
   string30_t name;
@@ -707,9 +708,6 @@ void play(file_t file_props, FILE *fptr) // play can just receive the value of f
   string30_t user_answer;
   int map_rand;
 
-  topics_t topic_list;	// this not only is the list of topics but the topics
-                        // but the size as well
-
   // topic_map has the same length as topic_count
   struct map
   {
@@ -717,11 +715,18 @@ void play(file_t file_props, FILE *fptr) // play can just receive the value of f
     int length;
     int indices[MAX];	// MAX possible indices worst case
   } topic_map[MAX];	// MAX worst case unique topics
+                        //
+  struct Topics
+  {
+    string30_t topics[101];	// we'll store Back in the same list
+    size_t topic_count;
+  } topic_list;
 
-      // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
 
-      // we put back in the list of topics so it can appear in the same select
-      // screen.
+  // THE CURRENT LIST OF QUESTIONS UNDER A SPECIFIC TOPIC
+
+  // we put back in the list of topics so it can appear in the same select
+  // screen.
 
   find_unique_topics(&file_props, topic_list.topics, &topic_list.topic_count);
   strcpy(topic_list.topics[topic_list.topic_count], "Back"); // at last index
@@ -776,17 +781,16 @@ void play(file_t file_props, FILE *fptr) // play can just receive the value of f
     }
     else
     {
+      delay(1);
       map_rand = rand() % topic_map[select].length;
       random_index = topic_map[select].indices[map_rand];
 
       system("cls");
 
-
      	// current choices into a list
       strcpy(current_choices[0], file_props.questions[random_index].choice1);
       strcpy(current_choices[1], file_props.questions[random_index].choice2);
       strcpy(current_choices[2], file_props.questions[random_index].choice3);
-
 
       choice = display_options_score(file_props.questions[random_index].question,
                                      current_choices, 3, score);
@@ -819,6 +823,7 @@ void play(file_t file_props, FILE *fptr) // play can just receive the value of f
         if (topic_map[select].length == 0) {
           for (i = select; i <= topic_list.topic_count; i++) {
             strcpy(topic_list.topics[i], topic_list.topics[i + 1]);
+            topic_map[i] = topic_map[i + 1];
           }
           topic_list.topic_count--;
         }

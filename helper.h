@@ -16,13 +16,7 @@ struct Question
 
 typedef struct Question question_t;
 
-struct Topics
-{
-  string30_t topics[101];	// we'll store Back in the same list
-  size_t topic_count;
-};
 
-typedef struct Topics topics_t;
 
 // struct for file properties, list of questions, size, and file name.
 struct File
