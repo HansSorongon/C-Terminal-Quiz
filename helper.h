@@ -1,6 +1,6 @@
 
-typedef char string30_t[31];
-typedef char string150_t[151];
+typedef char string30_t[31]; // extra 1 for null byte
+typedef char string150_t[151]; // extra 1 for null byte
 
 // main structure for questions
 struct Question
@@ -15,8 +15,6 @@ struct Question
 };
 
 typedef struct Question question_t;
-
-
 
 // struct for file properties, list of questions, size, and file name.
 struct File
@@ -36,8 +34,9 @@ void safe_scan(char *buffer, size_t max);
 
 int display_options(char prompt[], string30_t options[], size_t num_options);
 
-int display_options_score(char prompt[], string30_t options[], size_t num_options, int score);
+int display_options_score(char prompt[], string30_t options[],
+                          size_t num_options, int score);
 
 int prompt_password();
 
-int prompt_import(file_t *file_props);
+int is_in(string30_t arr[], size_t size, string30_t key);

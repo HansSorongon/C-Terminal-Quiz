@@ -38,7 +38,7 @@ void safe_scan(char *buffer, size_t max)
 
 /* display_options displays current options based on parameters passed in. Also
   handles the 'cursor-like' user input style. Clears the screen after every
-  navigation.
+  navigation. It returns the selected output.
   @param prompt[] - a string containing the prompt.
   @param options[] - an array of strings containing the options.
   @param num_options - the number of options.
@@ -98,8 +98,9 @@ int display_options(char prompt[], string30_t options[], size_t num_options)
 }
 
 /* display_options_score is a modified form iof display_options that allows for
-  the display of score after each input. This was made because display_options clears
-  the screen after every input erasing everything except for the elements it displays.
+  the display of score after each input. This was made because display_options
+  clears the screen after every input erasing everything except for the elements
+  it displays.
   @param prompt[] - a string containing the prompt.
   @param options[] - an array of strings containing the options.
   @param num_options - the number of options.
@@ -182,38 +183,60 @@ void delay(float seconds)
 */
 int prompt_password()
 {
+  system("cls");
   string30_t inp = {};
 
- 	// input stack
+  // input stack
   char ch;
   string30_t password = "admin123";
-  int i;
 
-  system("cls");
   printf("\n Password: ");
   while (ch != 13)
   {
    	// while not enter
     ch = getch();
-    system("cls");
-    printf("\n Password: ");
 
     if (ch == 8 && strlen(inp) > 0)
     {
       inp[strlen(inp) - 1] = '\0';	// set last to null
+      printf("\b \b"); // print the backspace char
     }
     else if (ch != 8 && ch != 13 && strlen(inp) < 30)
     {
      	// if not bspace or not enter
-      strncat(inp, &ch, 1);	// append current ch to end
-    }
-
-    for (i = 0; i < strlen(inp); i++)
-    {
       printf("*");
+      strncat(inp, &ch, 1);	// append current ch to end
     }
   }
 
   return !abs(strcmp(inp, password));
 }
+
+/* is_in is a simple helper function that just returns 1, or 0 depending on
+  whether or not the passed in string is present in the array.
+
+  @param arr - the array to be checked
+@param key - the key to search for
+@param size - the size of the array
+
+   @return the status whether the input matches the hardcoded password "admin123"
+   Pre-condition: N/A
+*/
+int is_in(string30_t arr[], size_t size, string30_t key)
+{
+
+  int ret = 0;
+
+  for (int i = 0; i < size; i++)
+  {
+    if (!strcmp(key, arr[i]))
+    {
+      ret = 1;
+      i = size; // break out of the loop for efficiency
+    }
+  }
+
+  return ret;
+}
+
 
