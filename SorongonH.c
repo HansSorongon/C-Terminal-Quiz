@@ -286,7 +286,8 @@ void check_import(file_t *file_props, void (*function)())
    @param *file_props - A pointer to the struct representing the properties of
    the file including the questions.
 
-  Pre-condition: N/A
+  Pre-condition: The size of the file to be imported won't make the current
+  size exceed MAX.
 */
 void import_data(file_t *file_props)
 {
@@ -294,6 +295,7 @@ void import_data(file_t *file_props)
   int i = file_props->size;	// count of questions in txt
   int j;
   int confirm;
+  int imported = 0;
 
   system("cls");
   printf("\n Enter the file name: ");
@@ -301,7 +303,7 @@ void import_data(file_t *file_props)
 
   strcpy(file_props->file_name, file_name);	// set in file props
 
-  printf("\n Importing %s \n", file_name);
+  printf("\n Importing %s...\n", file_name);
   printf(" ");
 
  	// IMPORT LOGIC
@@ -310,10 +312,10 @@ void import_data(file_t *file_props)
   fptr = fopen(file_name, "r");
   char format[] = "%[^\n]\n%d\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n";
 
-  if (fptr != NULL)
+  if (fptr != NULL && i < MAX)
   {
-   	// serialization
-    while (!feof(fptr))
+    // serialization
+    while (!feof(fptr) && i < MAX)
     {
       fscanf(fptr, format,
         file_props->questions[i].topic,	// question at index i
@@ -325,14 +327,19 @@ void import_data(file_t *file_props)
         file_props->questions[i].answer);
       i++;
     }
+    imported = 1;
 
+  }
+  else if (i == MAX)
+  {
+    printf("Max size reached! Cannot import anymore!\n");
   }
   else
   {
     printf("File not found. Terminating...\n");
   }
 
-  if (fptr)
+  if (fptr && imported)
   {
     string30_t confirm_options[2] = { "Yes", "No" };
 

@@ -1,32 +1,7 @@
-Art
+Movies
 1
-Who painted the famous artwork "The Starry Night"?
-Claude Monet
-Vincent van Gogh
-Leonardo da Vinci
-Vincent van Gogh
-
-Art
-2
-Who painted the famous artwork "The Starry Night"?
-Claude Monet
-Vincent van Gogh
-Leonardo da Vinci
-Vincent van Gogh
-
-Math
-1
-Who painted the famous artwork "The Starry Night"?
-Claude Monet
-Vincent van Gogh
-Leonardo da Vinci
-Vincent van Gogh
-
-balls
-1
-balls
-balls
-balls
-balls
-balls
-
+Who plays John Wick?
+Keanu Reeves
+Tom Holland
+Shaquille O'Neal
+Keanu Reeves
