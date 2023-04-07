@@ -311,14 +311,6 @@ Graphical User Input
 Graphical User Interface
 
 Tech
-19
-John Atanasoff and Clifford Berry
-Charles Babbage
-Who invented the first electronAlan Turing
-Alan Turing
-John Atanasoff and Clifford BerrTech
-
-Tech
 20
 Which programming language was developed by Guido van Rossum?
 Python
